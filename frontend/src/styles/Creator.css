@@ -1,0 +1,5 @@
+.creator-container {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 60px); /* viewport height minus 60 px, "industry standard", I might change it later */
+}

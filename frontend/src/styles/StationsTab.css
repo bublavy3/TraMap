@@ -1,0 +1,9 @@
+.station-row {
+    display: flex;
+    margin-bottom: 5px;
+}
+
+.station-row input {
+    width: 100%;
+    padding: 4px;
+}

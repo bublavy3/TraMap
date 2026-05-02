@@ -1,0 +1,11 @@
+{
+  "panel": {
+    "title": "Editor",
+    "osm": "OpenStreetMap",
+    "image": "Obrázok",
+    "buttonA": "Pridávanie staníc",
+    "buttonB": "Tlačidlo B",
+    "textA": "Pravým tlačidlom pridávajte stanice",
+    "textB": "Zatiaľ neimplementované"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "panel": {
+    "title": "Editor",
+    "osm": "OpenStreetMap",
+    "image": "Image",
+    "buttonA": "Add stations",
+    "buttonB": "Button B",
+    "textA": "Right click to add station",
+    "textB": "Not yet implemented"
+  }
+}

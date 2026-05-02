@@ -1,0 +1,36 @@
+.tabs-container {
+    margin-top: 20px;
+}
+
+/* Tabs row */
+.tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: -1px; /* overlap with content border */
+}
+
+/* Individual tab */
+.tab {
+    padding: 8px 16px;
+    border: 2px solid black;
+    border-bottom: none;
+    background: #ddd;
+    cursor: pointer;
+    position: relative;
+    top: 2px;
+}
+
+/* Active tab */
+.tab.active {
+    background: white;
+    z-index: 2;
+    top: 0;
+}
+
+/* Content box */
+.tab-content {
+    border: 2px solid black;
+    padding: 20px;
+    background: white;
+    min-height: 150px;
+}
