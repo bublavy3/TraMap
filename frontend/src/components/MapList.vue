@@ -15,23 +15,22 @@ maps.forEach(m => {
 </script>
 
 <template>
-  <div>
+  <div class="map-list">
     <h2>Select map</h2>
-
-    <div v-for="(countries, continent) in hierarchy" :key="continent">
-      <h3>{{ continent }}</h3>
-
-      <div v-for="(cities, country) in countries" :key="country">
-        <h4>{{ country }}</h4>
-
-        <ul>
+    <details v-for="(countries, continent) in hierarchy" :key="continent">
+      <summary>{{ continent }}</summary>
+      <details v-for="(cities, country) in countries" :key="country" class="country">
+        <summary>{{ country }}</summary>
+        <ul class="cities">
           <li v-for="city in cities" :key="city.city">
             <router-link :to="`/viewer?img=${city.image}`">
               {{ city.city }}
             </router-link>
           </li>
         </ul>
-      </div>
-    </div>
+      </details>
+    </details>
   </div>
 </template>
+
+<style src="../styles/MapList.css" scoped></style>

@@ -1,0 +1,9 @@
+.map-list {
+    max-width: 500px;
+    margin: 20px auto;  /* auto sets the left-right position to centre to look somewhat nice for now, I will play around with everything regarding CSS later */
+    text-align: left;
+}
+
+.country, .cities {
+    margin-left: 10px;
+}
