@@ -44,11 +44,12 @@ If you are running the project for the first time:
 4. everything else is mostly a placeholder at this early stage
 
 ### Calendar of implementation
-| Start date | Issue                                                                       | State       |
-|:-----------|:----------------------------------------------------------------------------|:------------|
-| 15.2. 2026 | Libraries and frameworks selection                                          | In progress |
-| 24.3. 2026 | Design and creation of the base project structure                           | Done        |
-| 25.4. 2026 | Allow for language internationalization                                     | In progress |
-| 26.4. 2026 | Implement universal map browsing engine                                     | Done        |
-| 1.5. 2026  | Ensure placed graphic network elements are fixed relative to map coordinates| Done        |
-| 2.5. 2026  | Implement station placement                                                 | In progress |
+| Start date | Issue                                                                        | State       |
+|:-----------|:-----------------------------------------------------------------------------|:------------|
+| 15.2. 2026 | Libraries and frameworks selection                                           | In progress |
+| 24.3. 2026 | Design and creation of the base project structure                            | Done        |
+| 25.4. 2026 | Allow for language internationalization                                      | In progress |
+| 26.4. 2026 | Implement universal map browsing engine                                      | Done        |
+| 1.5. 2026  | Ensure placed graphic network elements are fixed relative to map coordinates | Done        |
+| 2.5. 2026  | Implement station placement                                                  | In progress |
+| 17.5. 2026 | Improve home page                                                            | In progress |
