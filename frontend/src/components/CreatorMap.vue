@@ -4,16 +4,29 @@ import BaseMap from "./BaseMap.vue"
 const props = defineProps({
   mode: String,
   imageUrl: String,
-  stations: Array
+  stations: Array,
+  routes: Array,
+  currentRoute: Object,
+  currentLine: Object
 })
 
 const emit = defineEmits([
-    "addStation"
+    "mapRightClick",
+    "stationRightClick",
+    "routeRightClick",
 ])
 
 // for now all we do on right click is add stations to the map, the provided functionality will of course be largely expanded
-function handleRightClick(coordinates) {
-  emit("addStation", coordinates)
+function handleMapRightClick(coordinates) {
+  emit("mapRightClick", coordinates)
+}
+
+function handleStationRightClick(stationId) {
+  emit("stationRightClick", stationId)
+}
+
+function handleRouteRightClick(coordinates) {
+  emit("routeRightClick", coordinates)
 }
 </script>
 
@@ -22,6 +35,11 @@ function handleRightClick(coordinates) {
       :mode="mode"
       :imageUrl="imageUrl"
       :stations="stations"
-      @rightClick="handleRightClick"
+      :routes="routes"
+      :currentRoute="currentRoute"
+      :currentLine="currentLine"
+      @mapRightClick="handleMapRightClick"
+      @stationRightClick="handleStationRightClick"
+      @routeRightClick="handleRouteRightClick"
   />
 </template>

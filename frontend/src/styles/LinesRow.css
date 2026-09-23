@@ -1,0 +1,21 @@
+.line-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 30px minmax(0, 1fr) 25px 25px;    /* Name input and transport mode are scaled between 0 and 1 fraction of their shared space, color pickers and buttons have fixed space width,  */
+    gap: 5px;
+    align-items: center;
+    padding: 3px 15px 3px 15px;     /* enough padding at sides to have space for clicking the line to focus it */
+    border: 1px solid #aaaaaa;
+    background: #fafafa;
+}
+
+.line-name-input, .line-mode-select {
+    padding: 3px;
+    border: 1px solid #aaaaaa;
+}
+
+.line-color-input {
+    width: 30px;
+    height: 30px;
+    border-color: #fafafa;
+    background: #fafafa;
+}

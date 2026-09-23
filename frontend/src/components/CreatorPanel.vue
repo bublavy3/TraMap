@@ -2,17 +2,20 @@
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 import PanelTabs from "./PanelTabs.vue"
+import { CreatorPanelTab } from "../constants/creatorPanelTabs.js";
 
 const props = defineProps({
   mode: String,
-  activeButton: String,
-  stations: Array
+  activeTab: String,
+  stations: Array,
+  lines: Array,
+  routes: Array
 })
 
 const emit = defineEmits([
   "modeChanged",
   "imageUploaded",
-  "buttonChanged"
+  "tabChanged"
 ])
 
 const { t } = useI18n()   // t will be the translation function used for texts being in user's selected language
@@ -20,6 +23,14 @@ const { t } = useI18n()   // t will be the translation function used for texts b
 // function to let Creator know when mode is changed via the select
 function changeMode(selectedOption) {
   emit("modeChanged", selectedOption.target.value)
+}
+
+function changeActiveTab(tab) {
+  emit("tabChanged", tab)
+}
+
+function handleLineFocused(lineId) {
+  emit("lineFocused", lineId)
 }
 
 // function to conduct file selection as image underlay utilizing standard browser built-in file explorer
@@ -34,19 +45,17 @@ function uploadImage(fileSelection) {
   reader.readAsDataURL(file)    // read the file and encode it as string
 }
 
-// this will be utilized
-function setActive(btn) {
-  emit("buttonChanged", btn)
-}
-
 const currentText = computed(() => {    // this text will inform the user how to use the tool he has selected
-  if (props.activeButton === "stationAddition") {
-    // more stuff will of course happen here in the future
-    return t("panel.textA")
+  switch (props.activeTab) {
+    case CreatorPanelTab.STATIONS:
+      return t("panel.textA")
+    case CreatorPanelTab.LINES:
+      return t("panel.textB")
+    case CreatorPanelTab.ROUTES:
+      return t("panel.textB")
+    default:
+      return t("panel.textB")
   }
-  if (props.activeButton === "lineAddition")
-    // more stuff will of course happen here in the future
-    return t("panel.textB")
 })
 </script>
 
@@ -65,15 +74,13 @@ const currentText = computed(() => {    // this text will inform the user how to
 
     <input type="text" :value="currentText" readonly />
 
-    <div class="buttons">
-      <button :class="{ active: activeButton === 'stationAddition' }" @click="setActive('stationAddition')">
-        {{ t('panel.buttonA') }}
-      </button>
-      <button :class="{ active: activeButton === 'lineAddition' }" @click="setActive('lineAddition')">
-        {{ t('panel.buttonB') }}
-      </button>
-    </div>
-    <PanelTabs :stations="stations"/>
+    <PanelTabs
+      :stations="stations"
+      :lines="lines"
+      :routes="routes"
+      @tabChanged="changeActiveTab"
+      @lineFocused="handleLineFocused"
+    />
   </div>
 </template>
 

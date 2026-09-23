@@ -1,16 +1,30 @@
 <script setup>
 import { ref } from "vue"
+import { CreatorPanelTab } from "../constants/creatorPanelTabs.js";
 import StationsTab from "./StationsTab.vue";
+import LinesTab from "./LinesTab.vue";
+import RoutesTab from "./RoutesTab.vue";
 
 const props = defineProps({
-  stations: Array
+  stations: Array,
+  lines: Array,
+  routes: Array
 })
 
-const tabs = ["A", "B", "C", "D"] // these will be soon replaced with icons for each respective tab: stations, lines, timetables, fares, export... and somewhere tranfers and other functionality
-const activeTab = ref("A")  // starter tab - stations - right now really just trying out the tab system
+const emit = defineEmits([
+  "tabChanged"
+])
+
+const tabs = [CreatorPanelTab.STATIONS, CreatorPanelTab.LINES, CreatorPanelTab.ROUTES] // these will be soon replaced with icons for each respective tab: stations, lines, timetables, fares, export... and somewhere tranfers and other functionality
+const activeTab = ref(CreatorPanelTab.STATIONS)  // starter tab - stations - right now really just trying out the tab system
 
 function selectTab(tab) {
   activeTab.value = tab
+  emit("tabChanged", tab)
+}
+
+function handleLineFocused(lineId) {
+  emit("lineFocused", lineId)
 }
 </script>
 
@@ -23,10 +37,9 @@ function selectTab(tab) {
     </div>
 
     <div class="tab-content">
-      <div v-if="activeTab === 'A'"><StationsTab :stations="stations" /></div>
-      <div v-if="activeTab === 'B'">Content of window B</div>
-      <div v-if="activeTab === 'C'">Content of window C</div>
-      <div v-if="activeTab === 'D'">Content of window D</div>
+      <div v-if="activeTab === CreatorPanelTab.STATIONS"><StationsTab :stations="stations" /></div>
+      <div v-if="activeTab === CreatorPanelTab.LINES"><LinesTab :lines="lines" @lineFocused="handleLineFocused"/></div>
+      <div v-if="activeTab === CreatorPanelTab.ROUTES"><RoutesTab :routes="routes" /></div>
     </div>
   </div>
 </template>

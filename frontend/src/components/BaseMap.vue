@@ -1,23 +1,30 @@
 <script setup>
 import { onMounted, onBeforeUnmount, watch, nextTick, ref } from "vue"
 import { renderStations } from "../functions/renderStations.js"
+import { renderRoutes } from "../functions/renderRoutes.js"
 import L from "leaflet"
 
 const props = defineProps({
   mode: String,
   imageUrl: String,
-  stations: Array
+  stations: Array,
+  routes: Array,
+  currentRoute: Object,
+  currentLine: Object
 })
 
 const emit = defineEmits([
   "mapReady",
-  "rightClick"
+  "mapRightClick",
+  "stationRightClick",
+  "routeRightClick"
 ])
 
 const mapContainer = ref(null)
 let map = null
 let currentLayer = null
 let stationLayerGroup = null
+let routeLayerGroup = null
 
 onMounted(() => {
   createMap()
@@ -48,6 +55,20 @@ watch(() => props.stations, () => {
     { deep: true }  // look inside the list
 )
 
+watch(
+    () => props.routes, () => {
+      renderRoutesOnMap()
+    },
+    { deep: true }
+)
+
+watch(
+    () => props.currentRoute, () => {
+      renderRoutesOnMap()
+    },
+    { deep: true }
+)
+
 function createMap() {
   if (!mapContainer.value) return
 
@@ -72,12 +93,14 @@ function createMap() {
 
   // Emit right-click event's coordinates to CreatorMap
   map.on("contextmenu", (e) => {
-    emit("rightClick", e.latlng)
+    emit("mapRightClick", e.latlng)
   })
 
 
   stationLayerGroup = L.layerGroup().addTo(map)   // Layer for stations
-  renderStations()
+  routeLayerGroup = L.layerGroup().addTo(map)
+  renderRoutesOnMap()
+  renderStationsOnMap()
   emit("mapReady", map)     // Tell the CreatorMap that the map is ready
 }
 
@@ -133,7 +156,21 @@ function loadImage(imageUrl) {
 function renderStationsOnMap() {
   if (!map || !stationLayerGroup) return
 
-  renderStations(stationLayerGroup, props.stations)
+  renderStations(stationLayerGroup, props.stations, stationId => emit("stationRightClick", stationId))  // we also send a function that will be called after station placement with right click
+}
+
+// Render routes
+function renderRoutesOnMap() {
+  if (!map || !routeLayerGroup)
+    return
+
+  renderRoutes(
+      routeLayerGroup,
+      props.routes,
+      props.currentRoute,
+      props.stations,
+      routeId => emit("routeRightClick", routeId)
+  )
 }
 </script>
 

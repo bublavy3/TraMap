@@ -1,5 +1,8 @@
 .tabs-container {
     margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
 /* Tabs row */
@@ -33,4 +36,16 @@
     padding: 20px;
     background: white;
     min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.tab-content > * {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
 }

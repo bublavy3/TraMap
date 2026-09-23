@@ -1,0 +1,40 @@
+.lines-tab {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.lines-main-controls {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.lines-add-button {
+    width: 35px;
+    height: 35px;
+    border: 1px solid #aaaaaa;
+    background: #eeeeee;
+    font-size: 25px;
+}
+
+.lines-filtering-and-sorting {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);   /* distribute into 2 columns evenly */
+    gap: 5px;
+}
+
+.lines-filter-or-sort-field {
+    padding: 3px;
+    border: 1px solid #aaaaaa;
+}
+
+.lines-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.focused-line-row {
+    border: 3px solid #22ff22;  /* TODO perhaps figure out highlighting by the color of the line? */
+}
