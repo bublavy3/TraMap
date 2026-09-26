@@ -4,7 +4,6 @@ export function renderRoutes(layerGroup, routes, currentRoute, stations, onRoute
 
     layerGroup.clearLayers()
 
-    // lookup station by id
     const stationMap = {}
 
     stations.forEach(station => {

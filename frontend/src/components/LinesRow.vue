@@ -7,7 +7,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  "deleteLine",
+  "lineDeleted",
   "lineFocused"
 ])
 
@@ -16,7 +16,7 @@ function handleRowClick() {
 }
 
 function handleDeleteClick() {
-  emit("deleteLine", props.line.id)
+  emit("lineDeleted", props.line.id)
 }
 </script>
 

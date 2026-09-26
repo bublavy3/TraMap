@@ -8,8 +8,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  "deleteLine",
-  "lineFocused"
+  "lineFocused",
+  "lineDeleted"
 ])
 
 const nameFilter = ref("")
@@ -74,7 +74,6 @@ async function addLine() {
     name: "New line",
     color: "#101010",
     transportMode: TransportMode.BUS,
-    trajectory: []
   }
 
   props.lines.push(newLine)
@@ -86,6 +85,7 @@ function handleDeleteLine(lineId) {
 
   if (index !== -1) {
     props.lines.splice(index, 1)  // lines array is const so it must be mutated
+    emit("lineDeleted", lineId)
   }
 
   if (focusedLineId.value === lineId) {
@@ -129,7 +129,7 @@ function handleDeleteLine(lineId) {
           :key="line.id"
           :line="line"
           :focused="line.id === focusedLineId"
-          @deleteLine="handleDeleteLine"
+          @lineDeleted="handleDeleteLine"
           @lineFocused="handleLineFocused"
       />
     </div>

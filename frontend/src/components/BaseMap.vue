@@ -2,6 +2,7 @@
 import { onMounted, onBeforeUnmount, watch, nextTick, ref } from "vue"
 import { renderStations } from "../functions/renderStations.js"
 import { renderRoutes } from "../functions/renderRoutes.js"
+import { renderLines } from "../functions/renderLines.js"
 import L from "leaflet"
 
 const props = defineProps({
@@ -9,8 +10,9 @@ const props = defineProps({
   imageUrl: String,
   stations: Array,
   routes: Array,
+  lines: Array,
   currentRoute: Object,
-  currentLine: Object
+  hideLines: Boolean
 })
 
 const emit = defineEmits([
@@ -25,6 +27,7 @@ let map = null
 let currentLayer = null
 let stationLayerGroup = null
 let routeLayerGroup = null
+let lineLayerGroup = null
 
 onMounted(() => {
   createMap()
@@ -58,9 +61,32 @@ watch(() => props.stations, () => {
 watch(
     () => props.routes, () => {
       renderRoutesOnMap()
+      if (!props.hideLines) {
+        renderLinesOnMap()
+      }
     },
     { deep: true }
 )
+
+watch(
+    () => props.lines, () => {
+      if (!props.hideLines) {
+        renderLinesOnMap()
+      }
+    },
+    { deep: true }
+)
+
+watch(() => props.hideLines, (hidden) => {
+  if (!lineLayerGroup) {
+    return
+  }
+  if (hidden) {
+    lineLayerGroup.clearLayers()
+  } else {
+    renderLinesOnMap()
+  }
+})
 
 watch(
     () => props.currentRoute, () => {
@@ -99,7 +125,13 @@ function createMap() {
 
   stationLayerGroup = L.layerGroup().addTo(map)   // Layer for stations
   routeLayerGroup = L.layerGroup().addTo(map)
+  lineLayerGroup = L.layerGroup().addTo(map)
+  map.createPane("stationPane") // Pane to have stations always on top of lines and routes
+  map.getPane("stationPane").style.zIndex = 500
   renderRoutesOnMap()
+  if (!props.hideLines) {
+    renderLinesOnMap()
+  }
   renderStationsOnMap()
   emit("mapReady", map)     // Tell the CreatorMap that the map is ready
 }
@@ -161,8 +193,7 @@ function renderStationsOnMap() {
 
 // Render routes
 function renderRoutesOnMap() {
-  if (!map || !routeLayerGroup)
-    return
+  if (!map || !routeLayerGroup) return
 
   renderRoutes(
       routeLayerGroup,
@@ -170,6 +201,19 @@ function renderRoutesOnMap() {
       props.currentRoute,
       props.stations,
       routeId => emit("routeRightClick", routeId)
+  )
+}
+
+// Render lines
+function renderLinesOnMap() {
+  if (!map || !lineLayerGroup) return
+
+  renderLines(
+      lineLayerGroup,
+      props.lines,
+      props.routes,
+      props.stations,
+      routeId => emit("routeRightClick", routeId)   // clicking is detected for route segments so that other lines can be added
   )
 }
 </script>

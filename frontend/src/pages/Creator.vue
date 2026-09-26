@@ -11,7 +11,8 @@ const stations = ref([])
 const lines = ref([])
 const routes = ref([])
 const currentRoute = ref(null)
-const currentLine = ref(null)
+const currentLineId = ref(null)
+const hideLines = ref(false)
 
 // in diploma thesis version only 2 underlay modes will be supported - OpenStreetMap and image, but in future there might be desire to add more map providers for example, or raw map data import
 function handleModeChange(newMode) {
@@ -24,6 +25,7 @@ function handleImageUpload(url) {
 
 function handleTabChange(tab) {
   activeTab.value = tab
+  hideLines.value = tab === CreatorPanelTab.ROUTES;
 }
 
 function handleMapRightClick(coordinates) {
@@ -53,6 +55,8 @@ function handleStationRightClick(stationId) {
     case CreatorPanelTab.ROUTES:
       if (currentRoute.value) { // finish route at this station
         currentRoute.value.stationB = stationId
+        currentRoute.value.id = Date.now()
+        currentRoute.value.lines = []
         routes.value.push(currentRoute.value)
         currentRoute.value = null
       } else {
@@ -66,25 +70,42 @@ function handleStationRightClick(stationId) {
   }
 }
 
-function handleRouteRightClick(coordinates) {
+function handleRouteRightClick(routeId) {
   switch (activeTab.value) {
     case CreatorPanelTab.STATIONS:
       break
     case CreatorPanelTab.LINES:
-      break
-    case CreatorPanelTab.ROUTES: // TODO BUG, route click gets ignored
-      if (currentRoute.value) { // add direction change point
-        currentRoute.value.points.push({
-          lat: coordinates.lat,
-          lng: coordinates.lng
-        })
+      const currentLine = lines.value.find(line => line.id === currentLineId.value)
+      const route = routes.value.find(route => route.id === routeId)
+      if (currentLine && route && !route.lines.includes(currentLineId.value)) {
+        route.lines.push(currentLineId.value)
       }
+      break
+    case CreatorPanelTab.ROUTES: // TODO click coordinates
+      // if (currentRoute.value) { // add direction change point
+      //   currentRoute.value.points.push({
+      //     lat: coordinates.lat,
+      //     lng: coordinates.lng
+      //   })
+      // }
       break
   }
 }
 
 function handleLineFocused(lineId) {
-  currentLine = props.lines.findIndex((line) => line.id === lineId)
+  currentLineId.value = lineId
+}
+
+function handleLineDeleted(lineId) {
+  if (currentLineId.value === lineId) {
+    currentLineId.value = null
+  }
+
+  routes.value.forEach(route => {
+    if (route.lines) {
+      route.lines = route.lines.filter(id => id !== lineId)
+    }
+  })
 }
 
 function addStation(coordinates) {
@@ -105,8 +126,9 @@ function addStation(coordinates) {
         :imageUrl="imageUrl"
         :stations="stations"
         :routes="routes"
+        :lines="lines"
         :currentRoute="currentRoute"
-        :currentLine="currentLine"
+        :hideLines="hideLines"
         @mapRightClick="handleMapRightClick"
         @stationRightClick="handleStationRightClick"
         @routeRightClick="handleRouteRightClick"
@@ -123,6 +145,7 @@ function addStation(coordinates) {
         @imageUploaded="handleImageUpload"
         @tabChanged="handleTabChange"
         @lineFocused="handleLineFocused"
+        @lineDeleted="handleLineDeleted"
     />
   </div>
 </template>

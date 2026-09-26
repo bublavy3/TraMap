@@ -1,12 +1,14 @@
 import L from "leaflet"
+import { settings } from "../config/settings.js"
 
 export function renderStationDot(station, onRightClick) {
     const dot = L.circleMarker([station.lat, station.lng], {
-        radius: 8,
+        radius: settings.stationDot.radius,
         color: "black",
         weight: 2,
         fillColor: "white",
-        fillOpacity: 1
+        fillOpacity: 1,
+        pane: "stationPane" // put stations in a pane that's always above lines and routes
     })
 
     dot.on("contextmenu", (e) => {

@@ -15,7 +15,9 @@ const props = defineProps({
 const emit = defineEmits([
   "modeChanged",
   "imageUploaded",
-  "tabChanged"
+  "tabChanged",
+  "lineFocused",
+  "lineDeleted"
 ])
 
 const { t } = useI18n()   // t will be the translation function used for texts being in user's selected language
@@ -31,6 +33,10 @@ function changeActiveTab(tab) {
 
 function handleLineFocused(lineId) {
   emit("lineFocused", lineId)
+}
+
+function handleLineDeleted(lineId) {
+  emit("lineDeleted", lineId)
 }
 
 // function to conduct file selection as image underlay utilizing standard browser built-in file explorer
@@ -80,6 +86,7 @@ const currentText = computed(() => {    // this text will inform the user how to
       :routes="routes"
       @tabChanged="changeActiveTab"
       @lineFocused="handleLineFocused"
+      @lineDeleted="handleLineDeleted"
     />
   </div>
 </template>

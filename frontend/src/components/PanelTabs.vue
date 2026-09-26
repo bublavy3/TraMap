@@ -12,7 +12,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  "tabChanged"
+  "tabChanged",
+  "lineFocused",
+  "lineDeleted"
 ])
 
 const tabs = [CreatorPanelTab.STATIONS, CreatorPanelTab.LINES, CreatorPanelTab.ROUTES] // these will be soon replaced with icons for each respective tab: stations, lines, timetables, fares, export... and somewhere tranfers and other functionality
@@ -26,6 +28,10 @@ function selectTab(tab) {
 function handleLineFocused(lineId) {
   emit("lineFocused", lineId)
 }
+
+function handleLineDeleted(lineId) {
+  emit("lineDeleted", lineId)
+}
 </script>
 
 <template>
@@ -38,7 +44,7 @@ function handleLineFocused(lineId) {
 
     <div class="tab-content">
       <div v-if="activeTab === CreatorPanelTab.STATIONS"><StationsTab :stations="stations" /></div>
-      <div v-if="activeTab === CreatorPanelTab.LINES"><LinesTab :lines="lines" @lineFocused="handleLineFocused"/></div>
+      <div v-if="activeTab === CreatorPanelTab.LINES"><LinesTab :lines="lines" @lineFocused="handleLineFocused" @lineDeleted="handleLineDeleted"/></div>
       <div v-if="activeTab === CreatorPanelTab.ROUTES"><RoutesTab :routes="routes" /></div>
     </div>
   </div>
