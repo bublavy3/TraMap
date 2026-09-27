@@ -9,10 +9,10 @@ import L from "leaflet"
 const props = defineProps({
   mode: String,
   imageUrl: String,
-  stations: Array,
-  junctions: Array,
-  routes: Array,
-  lines: Array,
+  stations: Object,
+  junctions: Object,
+  routes: Object,
+  lines: Object,
   currentRoute: Object,
   hideLines: Boolean,
   showJunctions: Boolean

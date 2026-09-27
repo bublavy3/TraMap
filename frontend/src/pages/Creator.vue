@@ -7,10 +7,10 @@ import CreatorPanel from "../components/CreatorPanel.vue"
 const mode = ref("osm")
 const imageUrl = ref(null)
 const activeTab = ref(CreatorPanelTab.STATIONS)
-const stations = ref([])
-const junctions = ref([])
-const lines = ref([])
-const routes = ref([])
+const stations = ref({})
+const junctions = ref({})
+const lines = ref({})
+const routes = ref({})
 const currentRoute = ref(null)
 const currentLineId = ref(null)
 const hideLines = ref(false)
@@ -64,7 +64,7 @@ function handleStationRightClick(stationId) {
         currentRoute.value.stationB = stationId
         currentRoute.value.id = Date.now()
         currentRoute.value.lines = []
-        routes.value.push(currentRoute.value)
+        routes.value[currentRoute.value.id] = currentRoute.value
         currentRoute.value = null
       } else {
         currentRoute.value = {
@@ -82,8 +82,8 @@ function handleRouteRightClick(routeId, coordinates) {
     case CreatorPanelTab.STATIONS:
       break
     case CreatorPanelTab.LINES:
-      const currentLine = lines.value.find(line => line.id === currentLineId.value)
-      const route = routes.value.find(route => route.id === routeId)
+      const currentLine = lines.value[currentLineId.value]
+      const route = routes.value[routeId]
       if (currentLine && route && !route.lines.includes(currentLineId.value)) {
         route.lines.push(currentLineId.value)
       }
@@ -100,6 +100,7 @@ function getDistance(p1, p2) { // TODO move to some helper functions file?
   return Math.sqrt((p2.lat - p1.lat) ** 2 + (p2.lng - p1.lng) ** 2);
 }
 
+// If distance from X to A + distance from X to B equals (with small tolerance) distance from A to B, then X must lie on line from A to B
 function detectPointOnRouteSegment(p1, p2, clickPoint) {
   const distanceClickP1 = getDistance(clickPoint, p1)
   const distanceClickP2 = getDistance(clickPoint, p2)
@@ -108,21 +109,12 @@ function detectPointOnRouteSegment(p1, p2, clickPoint) {
 }
 
 function splitRoute(routeId, coordinates) {
-  const routeIndex = routes.value.findIndex(route => route.id === routeId)
-  const route = routes.value[routeIndex]
-
-  const stationMap = {}
-
-  stations.value.forEach(station => {
-    stationMap[station.id] = station
-  })
-  junctions.value.forEach(junction => {
-    stationMap[junction.id] = junction
-  })
+  const route = routes.value[routeId]
+  const stationMap = { ...stations.value, ...junctions.value }  // '...' copies the array's elements
 
   const start = stationMap[route.stationA]  // can be a station or already a junction
   const end = stationMap[route.stationB]    // can be a station or already a junction
-  const allPoints = [{ lat: start.lat, lng: start.lng }, ...route.points, { lat: end.lat, lng: end.lng }] // '...' copies the array's elements
+  const allPoints = [{ lat: start.lat, lng: start.lng }, ...route.points, { lat: end.lat, lng: end.lng }]
   for (let i = 0; i < allPoints.length - 1; i++) {  // find where the new junction splits the route
     const p1 = allPoints[i]
     const p2 = allPoints[i + 1]
@@ -148,8 +140,10 @@ function splitRoute(routeId, coordinates) {
         points: secondSubRoutePoints,
         lines: [...route.lines]
       }
-      junctions.value.push(junction)
-      routes.value.splice(routeIndex, 1, firstSubRoute, secondSubRoute) // remove one (old) route at the index and put in place 2 new routes
+      junctions.value[junction.id] = junction
+      delete routes.value[routeId]
+      routes.value[firstSubRoute.id] = firstSubRoute
+      routes.value[secondSubRoute.id] = secondSubRoute
       return
     }
   }
@@ -164,7 +158,7 @@ function handleLineDeleted(lineId) {
     currentLineId.value = null
   }
 
-  routes.value.forEach(route => {
+  Object.values(routes.value).forEach(route => {
     if (route.lines) {
       route.lines = route.lines.filter(id => id !== lineId)
     }
@@ -172,12 +166,13 @@ function handleLineDeleted(lineId) {
 }
 
 function addStation(coordinates) {
-  stations.value.push({
+  const station = {
     id: Date.now(),       // just a very simple way to give unique id-s, later will be (probably) changed
     lat: coordinates.lat,     // latitude (north-south)
     lng: coordinates.lng,     // longitude (east-west)
     name: "New station"   // default name that can be overwritten in the Stations tab
-  })
+  }
+  stations.value[station.id] = station
 }
 </script>
 

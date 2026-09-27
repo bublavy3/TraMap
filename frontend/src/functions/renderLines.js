@@ -4,21 +4,14 @@ import { settings } from "../config/settings.js"
 export function renderLines(layerGroup, lines, routes, stations, junctions, onRouteRightClick) {
     layerGroup.clearLayers()
 
-    const stationMap = {}
+    const stationMap = { ...stations, ...junctions }
 
-    stations.forEach(station => {
-        stationMap[station.id] = station
-    })
-    junctions.forEach(junction => {
-        stationMap[junction.id] = junction
-    })
-
-    routes.forEach(route => {
+    Object.values(routes).forEach(route => {
         if (!route.lines) {
             return
         }
         const linesOnRoute = route.lines
-            .map(id => lines.find(line => line.id === id))
+            .map(id => lines[id])
 
         // TODO duplicate
         const points = []

@@ -6,9 +6,9 @@ import LinesTab from "./LinesTab.vue";
 import RoutesTab from "./RoutesTab.vue";
 
 const props = defineProps({
-  stations: Array,
-  lines: Array,
-  routes: Array
+  stations: Object,
+  lines: Object,
+  routes: Object
 })
 
 const emit = defineEmits([

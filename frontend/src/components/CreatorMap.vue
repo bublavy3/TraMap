@@ -4,10 +4,10 @@ import BaseMap from "./BaseMap.vue"
 const props = defineProps({
   mode: String,
   imageUrl: String,
-  stations: Array,
-  junctions: Array,
-  routes: Array,
-  lines: Array,
+  stations: Object,
+  junctions: Object,
+  routes: Object,
+  lines: Object,
   currentRoute: Object,
   hideLines: Boolean,
   showJunctions: Boolean

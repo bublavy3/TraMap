@@ -4,7 +4,7 @@ import { renderStationLabel } from "./renderStationLabel"
 export function renderStations(layerGroup, stations, onStationRightClick) {
     layerGroup?.clearLayers()
 
-    stations?.forEach(station => {
+    Object.values(stations ?? {}).forEach(station => {
         const dot = renderStationDot(station, onStationRightClick)
         const label = renderStationLabel(station)
 

@@ -4,7 +4,7 @@ import LinesRow from "./LinesRow.vue"
 import { TransportMode } from "../constants/transportModes.js"
 
 const props = defineProps({
-  lines: Array
+  lines: Object
 })
 
 const emit = defineEmits([
@@ -40,7 +40,7 @@ function compareLines(left, right, sortingCriteria) {
 }
 
 function refreshDisplayedLines(firstLine = null) {
-  let lines = props.lines.filter((line) => {
+  let lines = Object.values(props.lines).filter((line) => {
     return lineMatchesNameFilter(line, nameFilter.value) && lineMatchesModeFilter(line, transportModeFilter.value)
   })
 
@@ -76,15 +76,13 @@ async function addLine() {
     transportMode: TransportMode.BUS,
   }
 
-  props.lines.push(newLine)
+  props.lines[newLine.id] = newLine
   refreshDisplayedLines(newLine.id)
 }
 
 function handleDeleteLine(lineId) {
-  const index = props.lines.findIndex((line) => line.id === lineId)
-
-  if (index !== -1) {
-    props.lines.splice(index, 1)  // lines array is const so it must be mutated
+  if (props.lines[lineId]) {
+    delete props.lines[lineId]
     emit("lineDeleted", lineId)
   }
 

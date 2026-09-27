@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps({
-  stations: Array
+  stations: Object
 })
 </script>
 

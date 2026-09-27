@@ -4,17 +4,10 @@ export function renderRoutes(layerGroup, routes, currentRoute, stations, junctio
 
     layerGroup.clearLayers()
 
-    const stationMap = {}
-
-    stations.forEach(station => {
-        stationMap[station.id] = station
-    })
-    junctions.forEach(junction => {
-        stationMap[junction.id] = junction
-    })
+    const stationMap = { ...stations, ...junctions }
 
     // completed routes
-    routes.forEach(route => {
+    Object.values(routes).forEach(route => {
         const points = []
         const start = stationMap[route.stationA]
         const end = stationMap[route.stationB]

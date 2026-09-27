@@ -7,9 +7,9 @@ import { CreatorPanelTab } from "../constants/creatorPanelTabs.js";
 const props = defineProps({
   mode: String,
   activeTab: String,
-  stations: Array,
-  lines: Array,
-  routes: Array
+  stations: Object,
+  lines: Object,
+  routes: Object
 })
 
 const emit = defineEmits([
