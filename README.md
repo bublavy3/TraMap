@@ -15,13 +15,10 @@ Here you will find:
 
 ## State of development
 
-This project is in ***very early stage*** of development!
-Do not expect anything to "work", other than scrolling the OSM map or the opened underlay image and demo of adding stations. 
-Everything else is a little more than a placeholder now.
-Also it's very ugly as I am focusing on functionality first, only styles necessary for the concept are somewhat refined. 
-Treat it as a showcase of "work in progress", not a demo version of the app.
-There was some thought put into the source code even if it is not utilized yet, so perhaps check that instead as it has hints of what's to come.
-For example multiple language support is already figured out, even tho the user cannot set the language by himself yet.
+This project is in ***early stage*** of development!
+Basis for the concepts of map utilization, stations, lines, routes and route junctions are now implemented but are not polished, 
+mostly serve as mock, and will keep receiving new functionality and functionality updates. 
+Bugs and missing features are to be expected with this version of the prototype!
 
 ## Running the project
 
@@ -37,12 +34,6 @@ If you are running the project for the first time:
 1. in `frontend` directory run: `npm run dev`
 2. proceed to the provided URL
 
-### Once you are in
-1. do not panic over no "design" whatsoever so far
-2. check out the map creation, use the default OSM map or import map file (salzburg.jpg from frontend/public/other is quite a nice demo)
-3. try to add some stations with right click and rename them
-4. everything else is mostly a placeholder at this early stage
-
 ### Calendar of implementation
 | Start date | Issue                                                                        | State       |
 |:-----------|:-----------------------------------------------------------------------------|:------------|
@@ -51,5 +42,8 @@ If you are running the project for the first time:
 | 25.4. 2026 | Allow for language internationalization                                      | In progress |
 | 26.4. 2026 | Implement universal map browsing engine                                      | Done        |
 | 1.5. 2026  | Ensure placed graphic network elements are fixed relative to map coordinates | Done        |
-| 2.5. 2026  | Implement station placement                                                  | In progress |
+| 2.5. 2026  | Implement station placement                                                  | Done        |
 | 17.5. 2026 | Improve home page                                                            | In progress |
+| 22.8. 2026 | Implement routes and junctions                                               | In progress |
+| 22.9. 2026 | Implement simple line placement                                              | Done        |
+| 25.9. 2026 | Improve line trunks with minimum crossings                                   | In progress |
