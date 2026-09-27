@@ -16,7 +16,7 @@ export function renderMultiline(layerGroup, routeId, points, lines, lineWidth, o
         })
         polyline.on("contextmenu", event => {
                         L.DomEvent.stopPropagation(event)
-                        onRouteRightClick(routeId)
+                        onRouteRightClick(routeId, event.latlng)
                     })
         polyline.addTo(layerGroup)
         edge += lineWidth;

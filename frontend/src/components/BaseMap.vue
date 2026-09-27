@@ -3,16 +3,19 @@ import { onMounted, onBeforeUnmount, watch, nextTick, ref } from "vue"
 import { renderStations } from "../functions/renderStations.js"
 import { renderRoutes } from "../functions/renderRoutes.js"
 import { renderLines } from "../functions/renderLines.js"
+import { renderJunctions } from "../functions/renderJunctions.js"
 import L from "leaflet"
 
 const props = defineProps({
   mode: String,
   imageUrl: String,
   stations: Array,
+  junctions: Array,
   routes: Array,
   lines: Array,
   currentRoute: Object,
-  hideLines: Boolean
+  hideLines: Boolean,
+  showJunctions: Boolean
 })
 
 const emit = defineEmits([
@@ -26,6 +29,7 @@ const mapContainer = ref(null)
 let map = null
 let currentLayer = null
 let stationLayerGroup = null
+let junctionLayerGroup = null
 let routeLayerGroup = null
 let lineLayerGroup = null
 
@@ -57,6 +61,25 @@ watch(() => props.stations, () => {
     },
     { deep: true }  // look inside the list
 )
+
+watch(() => props.junctions, () => {
+  renderJunctionsOnMap()
+  renderRoutesOnMap()
+  if (!props.hideLines) {
+    renderLinesOnMap()
+  }
+}, { deep: true })
+
+watch(() => props.showJunctions, (visible) => {
+  if (!junctionLayerGroup) {
+    return
+  }
+  if (visible) {
+    renderJunctionsOnMap()
+  } else {
+    junctionLayerGroup.clearLayers()
+  }
+})
 
 watch(
     () => props.routes, () => {
@@ -124,6 +147,7 @@ function createMap() {
 
 
   stationLayerGroup = L.layerGroup().addTo(map)   // Layer for stations
+  junctionLayerGroup = L.layerGroup().addTo(map)
   routeLayerGroup = L.layerGroup().addTo(map)
   lineLayerGroup = L.layerGroup().addTo(map)
   map.createPane("stationPane") // Pane to have stations always on top of lines and routes
@@ -133,6 +157,9 @@ function createMap() {
     renderLinesOnMap()
   }
   renderStationsOnMap()
+  if (props.showJunctions) {
+    renderJunctionsOnMap()
+  }
   emit("mapReady", map)     // Tell the CreatorMap that the map is ready
 }
 
@@ -191,6 +218,12 @@ function renderStationsOnMap() {
   renderStations(stationLayerGroup, props.stations, stationId => emit("stationRightClick", stationId))  // we also send a function that will be called after station placement with right click
 }
 
+function renderJunctionsOnMap() {
+  if (!map || !junctionLayerGroup || !props.showJunctions) return
+
+  renderJunctions(junctionLayerGroup, props.junctions, junctionId => emit("stationRightClick", junctionId))
+}
+
 // Render routes
 function renderRoutesOnMap() {
   if (!map || !routeLayerGroup) return
@@ -200,20 +233,22 @@ function renderRoutesOnMap() {
       props.routes,
       props.currentRoute,
       props.stations,
-      routeId => emit("routeRightClick", routeId)
+      props.junctions,
+      (routeId, coordinates) => emit("routeRightClick", routeId, coordinates)
   )
 }
 
 // Render lines
 function renderLinesOnMap() {
-  if (!map || !lineLayerGroup) return
+  if (!map || !lineLayerGroup || props.hideLines) return
 
   renderLines(
       lineLayerGroup,
       props.lines,
       props.routes,
       props.stations,
-      routeId => emit("routeRightClick", routeId)   // clicking is detected for route segments so that other lines can be added
+      props.junctions,
+      (routeId, coordinates) => emit("routeRightClick", routeId, coordinates)   // clicking is detected for route segments so that other lines and junctions can be added
   )
 }
 </script>

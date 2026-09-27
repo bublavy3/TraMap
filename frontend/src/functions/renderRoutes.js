@@ -1,6 +1,6 @@
 import L from "leaflet"
 
-export function renderRoutes(layerGroup, routes, currentRoute, stations, onRouteRightClick) {
+export function renderRoutes(layerGroup, routes, currentRoute, stations, junctions, onRouteRightClick) {
 
     layerGroup.clearLayers()
 
@@ -8,6 +8,9 @@ export function renderRoutes(layerGroup, routes, currentRoute, stations, onRoute
 
     stations.forEach(station => {
         stationMap[station.id] = station
+    })
+    junctions.forEach(junction => {
+        stationMap[junction.id] = junction
     })
 
     // completed routes
@@ -32,7 +35,7 @@ export function renderRoutes(layerGroup, routes, currentRoute, stations, onRoute
 
         polyline.on("contextmenu", e => {
             L.DomEvent.stopPropagation(e)
-            onRouteRightClick(route.id) // callback for when this route was clicked
+            onRouteRightClick(route.id, e.latlng) // callback for when this route was clicked
         })
         polyline.addTo(layerGroup)
 

@@ -5,10 +5,12 @@ const props = defineProps({
   mode: String,
   imageUrl: String,
   stations: Array,
+  junctions: Array,
   routes: Array,
   lines: Array,
   currentRoute: Object,
-  hideLines: Boolean
+  hideLines: Boolean,
+  showJunctions: Boolean
 })
 
 const emit = defineEmits([
@@ -26,8 +28,8 @@ function handleStationRightClick(stationId) {
   emit("stationRightClick", stationId)
 }
 
-function handleRouteRightClick(routeId) {
-  emit("routeRightClick", routeId)
+function handleRouteRightClick(routeId, coordinates) {
+  emit("routeRightClick", routeId, coordinates)
 }
 </script>
 
@@ -36,10 +38,12 @@ function handleRouteRightClick(routeId) {
       :mode="mode"
       :imageUrl="imageUrl"
       :stations="stations"
+      :junctions="junctions"
       :routes="routes"
       :lines="lines"
       :currentRoute="currentRoute"
       :hideLines="hideLines"
+      :showJunctions="showJunctions"
       @mapRightClick="handleMapRightClick"
       @stationRightClick="handleStationRightClick"
       @routeRightClick="handleRouteRightClick"

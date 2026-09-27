@@ -8,11 +8,13 @@ const mode = ref("osm")
 const imageUrl = ref(null)
 const activeTab = ref(CreatorPanelTab.STATIONS)
 const stations = ref([])
+const junctions = ref([])
 const lines = ref([])
 const routes = ref([])
 const currentRoute = ref(null)
 const currentLineId = ref(null)
 const hideLines = ref(false)
+const showJunctions = ref(false)
 
 // in diploma thesis version only 2 underlay modes will be supported - OpenStreetMap and image, but in future there might be desire to add more map providers for example, or raw map data import
 function handleModeChange(newMode) {
@@ -26,6 +28,7 @@ function handleImageUpload(url) {
 function handleTabChange(tab) {
   activeTab.value = tab
   hideLines.value = tab === CreatorPanelTab.ROUTES;
+  showJunctions.value = tab === CreatorPanelTab.ROUTES;
 }
 
 function handleMapRightClick(coordinates) {
@@ -54,6 +57,10 @@ function handleStationRightClick(stationId) {
       break
     case CreatorPanelTab.ROUTES:
       if (currentRoute.value) { // finish route at this station
+        if (currentRoute.value.stationA === stationId) {  // if end station is the same as start station
+          currentRoute.value = null
+          break
+        }
         currentRoute.value.stationB = stationId
         currentRoute.value.id = Date.now()
         currentRoute.value.lines = []
@@ -70,7 +77,7 @@ function handleStationRightClick(stationId) {
   }
 }
 
-function handleRouteRightClick(routeId) {
+function handleRouteRightClick(routeId, coordinates) {
   switch (activeTab.value) {
     case CreatorPanelTab.STATIONS:
       break
@@ -81,14 +88,70 @@ function handleRouteRightClick(routeId) {
         route.lines.push(currentLineId.value)
       }
       break
-    case CreatorPanelTab.ROUTES: // TODO click coordinates
-      // if (currentRoute.value) { // add direction change point
-      //   currentRoute.value.points.push({
-      //     lat: coordinates.lat,
-      //     lng: coordinates.lng
-      //   })
-      // }
+    case CreatorPanelTab.ROUTES:
+      if (!currentRoute.value) {
+        splitRoute(routeId, coordinates)
+      }
       break
+  }
+}
+
+function getDistance(p1, p2) { // TODO move to some helper functions file?
+  return Math.sqrt((p2.lat - p1.lat) ** 2 + (p2.lng - p1.lng) ** 2);
+}
+
+function detectPointOnRouteSegment(p1, p2, clickPoint) {
+  const distanceClickP1 = getDistance(clickPoint, p1)
+  const distanceClickP2 = getDistance(clickPoint, p2)
+  const distanceP1P2 = getDistance(p1, p2)
+  return Math.abs((distanceClickP1 + distanceClickP2) - distanceP1P2) < distanceClickP2 / 10  // TODO different tolerance than just tenth of the points distance
+}
+
+function splitRoute(routeId, coordinates) {
+  const routeIndex = routes.value.findIndex(route => route.id === routeId)
+  const route = routes.value[routeIndex]
+
+  const stationMap = {}
+
+  stations.value.forEach(station => {
+    stationMap[station.id] = station
+  })
+  junctions.value.forEach(junction => {
+    stationMap[junction.id] = junction
+  })
+
+  const start = stationMap[route.stationA]  // can be a station or already a junction
+  const end = stationMap[route.stationB]    // can be a station or already a junction
+  const allPoints = [{ lat: start.lat, lng: start.lng }, ...route.points, { lat: end.lat, lng: end.lng }] // '...' copies the array's elements
+  for (let i = 0; i < allPoints.length - 1; i++) {  // find where the new junction splits the route
+    const p1 = allPoints[i]
+    const p2 = allPoints[i + 1]
+    if (detectPointOnRouteSegment(p1, p2, coordinates)) {
+      const firstSubRoutePoints = allPoints.slice(1, i + 1)
+      const secondSubRoutePoints = allPoints.slice(i + 1, allPoints.length)
+      const junction = {
+        id: Date.now(),
+        lat: coordinates.lat,
+        lng: coordinates.lng
+      }
+      const firstSubRoute = {
+        id: Date.now() + 1,
+        stationA: route.stationA,
+        stationB: junction.id,
+        points: firstSubRoutePoints,
+        lines: [...route.lines]
+      }
+      const secondSubRoute = {
+        id: Date.now() + 2,
+        stationA: junction.id,
+        stationB: route.stationB,
+        points: secondSubRoutePoints,
+        lines: [...route.lines]
+      }
+      junctions.value.push(junction)
+      routes.value.splice(routeIndex, 1, firstSubRoute, secondSubRoute) // remove one (old) route at the index and put in place 2 new routes
+      return
+    }
   }
 }
 
@@ -125,10 +188,12 @@ function addStation(coordinates) {
         :mode="mode"
         :imageUrl="imageUrl"
         :stations="stations"
+        :junctions="junctions"
         :routes="routes"
         :lines="lines"
         :currentRoute="currentRoute"
         :hideLines="hideLines"
+        :showJunctions="showJunctions"
         @mapRightClick="handleMapRightClick"
         @stationRightClick="handleStationRightClick"
         @routeRightClick="handleRouteRightClick"
