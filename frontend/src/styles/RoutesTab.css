@@ -1,0 +1,38 @@
+.routes-tab {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    gap: 5px;
+}
+
+.routes-main-controls {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.routes-filtering {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 5px;
+}
+
+.routes-filter-field {
+    padding: 3px;
+    border: 1px solid #aaaaaa;
+}
+
+.routes-checkbox-label {
+    font-size: 0.65rem;
+}
+
+.routes-checkbox-label input {
+    margin-left: 0;
+}
+
+.routes-list {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    gap: 5px;
+}

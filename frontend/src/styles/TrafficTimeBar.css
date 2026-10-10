@@ -1,0 +1,33 @@
+.editing-bar {
+    display: grid;
+    grid-template-columns: repeat(48, 1fr);   /* 48 equal fractions */
+    grid-template-rows: 30px 40px;
+}
+
+.hour-label {
+    grid-column: span 2; /* hour label overlaps 2 blocks */
+    border-left: 1px solid #aaaaaa;
+}
+
+.level-0 {
+    background: limegreen;
+}
+.level-1 {
+    background: goldenrod;
+}
+.level-2 {
+    background: crimson;
+}
+
+.legend {
+    display: flex;
+    gap: 50px;
+    margin-top: 10px;
+}
+
+.legend-sample {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+}

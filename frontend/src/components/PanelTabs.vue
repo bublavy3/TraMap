@@ -7,6 +7,7 @@ import RoutesTab from "./RoutesTab.vue";
 
 const props = defineProps({
   stations: Object,
+  junctions: Object,
   lines: Object,
   routes: Object
 })
@@ -14,7 +15,10 @@ const props = defineProps({
 const emit = defineEmits([
   "tabChanged",
   "lineFocused",
-  "lineDeleted"
+  "lineDeleted",
+  "routeHovered",
+  "stationDeleted",
+  "routeDeleted"
 ])
 
 const tabs = [CreatorPanelTab.STATIONS, CreatorPanelTab.LINES, CreatorPanelTab.ROUTES] // these will be soon replaced with icons for each respective tab: stations, lines, timetables, fares, export... and somewhere tranfers and other functionality
@@ -25,12 +29,24 @@ function selectTab(tab) {
   emit("tabChanged", tab)
 }
 
+function handleStationDeleted(stationId) {
+  emit("stationDeleted", stationId)
+}
+
 function handleLineFocused(lineId) {
   emit("lineFocused", lineId)
 }
 
 function handleLineDeleted(lineId) {
   emit("lineDeleted", lineId)
+}
+
+function handleRouteHovered(routeId) {
+  emit("routeHovered", routeId)
+}
+
+function handleRouteDeleted(lineId) {
+  emit("routeDeleted", lineId)
 }
 </script>
 
@@ -43,9 +59,9 @@ function handleLineDeleted(lineId) {
     </div>
 
     <div class="tab-content">
-      <div v-if="activeTab === CreatorPanelTab.STATIONS"><StationsTab :stations="stations" /></div>
-      <div v-if="activeTab === CreatorPanelTab.LINES"><LinesTab :lines="lines" @lineFocused="handleLineFocused" @lineDeleted="handleLineDeleted"/></div>
-      <div v-if="activeTab === CreatorPanelTab.ROUTES"><RoutesTab :routes="routes" /></div>
+      <div v-if="activeTab === CreatorPanelTab.STATIONS" class="tab-content-inside"><StationsTab :stations="stations" @stationDeleted="handleStationDeleted"/></div>
+      <div v-if="activeTab === CreatorPanelTab.LINES" class="tab-content-inside"><LinesTab :lines="lines" :routes="routes" :stations="stations" :junctions="junctions" @lineFocused="handleLineFocused" @lineDeleted="handleLineDeleted"/></div>
+      <div v-if="activeTab === CreatorPanelTab.ROUTES" class="tab-content-inside"><RoutesTab :routes="routes" :stations="{ ...stations, ...junctions }" :lines="lines" @routeDeleted="handleRouteDeleted" @hover="handleRouteHovered" /></div>
     </div>
   </div>
 </template>

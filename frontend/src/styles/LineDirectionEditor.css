@@ -1,0 +1,28 @@
+.pathRow, .scheduleRow {
+    display: flex;
+    gap: 20px;
+    margin: 10px;
+}
+
+label {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+input, select, button {
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+table {
+    width: 100%;
+    margin-top: 20px;
+    text-align: left;
+    border-collapse: collapse; /* removes the spaces between borders */
+}
+
+th, td {
+    padding: 5px;
+    border-bottom: 1px solid #aaaaaa;
+}

@@ -13,6 +13,7 @@ const lines = ref({})
 const routes = ref({})
 const currentRoute = ref(null)
 const currentLineId = ref(null)
+const hoveredRouteId = ref(null)
 const hideLines = ref(false)
 const showJunctions = ref(false)
 
@@ -27,6 +28,7 @@ function handleImageUpload(url) {
 
 function handleTabChange(tab) {
   activeTab.value = tab
+  hoveredRouteId.value = null
   hideLines.value = tab === CreatorPanelTab.ROUTES;
   showJunctions.value = tab === CreatorPanelTab.ROUTES;
 }
@@ -64,6 +66,9 @@ function handleStationRightClick(stationId) {
         currentRoute.value.stationB = stationId
         currentRoute.value.id = Date.now()
         currentRoute.value.lines = []
+        currentRoute.value.travelTime = 0
+        currentRoute.value.highTrafficTime = 0
+        currentRoute.value.lowTrafficTime = 0
         routes.value[currentRoute.value.id] = currentRoute.value
         currentRoute.value = null
       } else {
@@ -77,15 +82,19 @@ function handleStationRightClick(stationId) {
   }
 }
 
-function handleRouteRightClick(routeId, coordinates) {
+function handleRouteRightClick(routeId, coordinates, ctrlPressed) {
   switch (activeTab.value) {
     case CreatorPanelTab.STATIONS:
       break
     case CreatorPanelTab.LINES:
       const currentLine = lines.value[currentLineId.value]
       const route = routes.value[routeId]
-      if (currentLine && route && !route.lines.includes(currentLineId.value)) {
-        route.lines.push(currentLineId.value)
+      if (currentLine && route) {
+        if (ctrlPressed) {
+          route.lines = route.lines.filter(lineId => lineId !== currentLineId.value)
+        } else if (!route.lines.includes(currentLineId.value)) {
+          route.lines.push(currentLineId.value)
+        }
       }
       break
     case CreatorPanelTab.ROUTES:
@@ -124,21 +133,28 @@ function splitRoute(routeId, coordinates) {
       const junction = {
         id: Date.now(),
         lat: coordinates.lat,
-        lng: coordinates.lng
+        lng: coordinates.lng,
+        name: `(${coordinates.lat.toFixed(4)} ${coordinates.lng.toFixed(4)})`  // toFixed does rounding (to 4 digits after decimal separator)
       }
       const firstSubRoute = {
         id: Date.now() + 1,
         stationA: route.stationA,
         stationB: junction.id,
         points: firstSubRoutePoints,
-        lines: [...route.lines]
+        lines: [...route.lines],
+        travelTime: 0,
+        highTrafficTime: 0,
+        lowTrafficTime: 0
       }
       const secondSubRoute = {
         id: Date.now() + 2,
         stationA: junction.id,
         stationB: route.stationB,
         points: secondSubRoutePoints,
-        lines: [...route.lines]
+        lines: [...route.lines],
+        travelTime: 0,
+        highTrafficTime: 0,
+        lowTrafficTime: 0
       }
       junctions.value[junction.id] = junction
       delete routes.value[routeId]
@@ -147,6 +163,15 @@ function splitRoute(routeId, coordinates) {
       return
     }
   }
+}
+
+function handleStationDeleted(stationId) {
+  Object.values(routes.value).forEach(route => {
+    if (route.stationA === stationId || route.stationB === stationId) {
+      handleRouteDeleted(route.id)
+    }
+  })
+  delete stations.value[stationId];
 }
 
 function handleLineFocused(lineId) {
@@ -161,6 +186,25 @@ function handleLineDeleted(lineId) {
   Object.values(routes.value).forEach(route => {
     if (route.lines) {
       route.lines = route.lines.filter(id => id !== lineId)
+    }
+  })
+}
+
+function handleRouteHovered(routeId) {
+  hoveredRouteId.value = routeId
+}
+
+function handleRouteDeleted(routeId) {
+  const route = routes.value[routeId]
+  delete routes.value[routeId]; // when no semicolon was present, JS was treating the line bellow as part of the delete statement
+  [route.stationA, route.stationB].forEach(stationId => {
+    if (!(stationId in junctions.value)) {
+      return
+    }
+    if (!Object.values(routes.value).some(remainingRoute =>
+        remainingRoute.stationA === stationId || remainingRoute.stationB === stationId
+    )) {
+      delete junctions.value[stationId]
     }
   })
 }
@@ -187,6 +231,7 @@ function addStation(coordinates) {
         :routes="routes"
         :lines="lines"
         :currentRoute="currentRoute"
+        :hoveredRouteId="hoveredRouteId"
         :hideLines="hideLines"
         :showJunctions="showJunctions"
         @mapRightClick="handleMapRightClick"
@@ -199,6 +244,7 @@ function addStation(coordinates) {
         :mode="mode"
         :activeTab="activeTab"
         :stations="stations"
+        :junctions="junctions"
         :lines="lines"
         :routes="routes"
         @modeChanged="handleModeChange"
@@ -206,6 +252,9 @@ function addStation(coordinates) {
         @tabChanged="handleTabChange"
         @lineFocused="handleLineFocused"
         @lineDeleted="handleLineDeleted"
+        @routeHovered="handleRouteHovered"
+        @stationDeleted="handleStationDeleted"
+        @routeDeleted="handleRouteDeleted"
     />
   </div>
 </template>

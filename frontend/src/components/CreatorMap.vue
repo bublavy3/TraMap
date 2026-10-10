@@ -9,6 +9,7 @@ const props = defineProps({
   routes: Object,
   lines: Object,
   currentRoute: Object,
+  hoveredRouteId: Number,
   hideLines: Boolean,
   showJunctions: Boolean
 })
@@ -28,8 +29,8 @@ function handleStationRightClick(stationId) {
   emit("stationRightClick", stationId)
 }
 
-function handleRouteRightClick(routeId, coordinates) {
-  emit("routeRightClick", routeId, coordinates)
+function handleRouteRightClick(routeId, coordinates, ctrlPressed) {
+  emit("routeRightClick", routeId, coordinates, ctrlPressed)
 }
 </script>
 
@@ -42,6 +43,7 @@ function handleRouteRightClick(routeId, coordinates) {
       :routes="routes"
       :lines="lines"
       :currentRoute="currentRoute"
+      :hoveredRouteId="hoveredRouteId"
       :hideLines="hideLines"
       :showJunctions="showJunctions"
       @mapRightClick="handleMapRightClick"

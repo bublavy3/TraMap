@@ -8,6 +8,7 @@ const props = defineProps({
   mode: String,
   activeTab: String,
   stations: Object,
+  junctions: Object,
   lines: Object,
   routes: Object
 })
@@ -17,7 +18,10 @@ const emit = defineEmits([
   "imageUploaded",
   "tabChanged",
   "lineFocused",
-  "lineDeleted"
+  "lineDeleted",
+  "routeHovered",
+  "stationDeleted",
+  "routeDeleted"
 ])
 
 const { t } = useI18n()   // t will be the translation function used for texts being in user's selected language
@@ -31,12 +35,24 @@ function changeActiveTab(tab) {
   emit("tabChanged", tab)
 }
 
+function handleStationDeleted(stationId) {
+  emit("stationDeleted", stationId)
+}
+
 function handleLineFocused(lineId) {
   emit("lineFocused", lineId)
 }
 
 function handleLineDeleted(lineId) {
   emit("lineDeleted", lineId)
+}
+
+function handleRouteHovered(routeId) {
+  emit("routeHovered", routeId)
+}
+
+function handleRouteDeleted(lineId) {
+  emit("routeDeleted", lineId)
 }
 
 // function to conduct file selection as image underlay utilizing standard browser built-in file explorer
@@ -82,11 +98,15 @@ const currentText = computed(() => {    // this text will inform the user how to
 
     <PanelTabs
       :stations="stations"
+      :junctions="junctions"
       :lines="lines"
       :routes="routes"
       @tabChanged="changeActiveTab"
       @lineFocused="handleLineFocused"
       @lineDeleted="handleLineDeleted"
+      @routeHovered="handleRouteHovered"
+      @stationDeleted="handleStationDeleted"
+      @routeDeleted="handleRouteDeleted"
     />
   </div>
 </template>

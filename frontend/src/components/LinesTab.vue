@@ -4,7 +4,10 @@ import LinesRow from "./LinesRow.vue"
 import { TransportMode } from "../constants/transportModes.js"
 
 const props = defineProps({
-  lines: Object
+  lines: Object,
+  routes: Object,
+  stations: Object,
+  junctions: Object
 })
 
 const emit = defineEmits([
@@ -74,6 +77,8 @@ async function addLine() {
     name: "New line",
     color: "#101010",
     transportMode: TransportMode.BUS,
+    directions: {},
+    trafficLevels: new Array(48).fill(1)
   }
 
   props.lines[newLine.id] = newLine
@@ -126,14 +131,13 @@ function handleDeleteLine(lineId) {
           v-for="line in displayedLines"
           :key="line.id"
           :line="line"
+          :routes="routes"
+          :stations="stations"
+          :junctions="junctions"
           :focused="line.id === focusedLineId"
           @lineDeleted="handleDeleteLine"
           @lineFocused="handleLineFocused"
       />
-    </div>
-
-    <div v-else>
-      No lines match the current filters.
     </div>
   </div>
 </template>

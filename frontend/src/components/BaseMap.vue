@@ -14,6 +14,7 @@ const props = defineProps({
   routes: Object,
   lines: Object,
   currentRoute: Object,
+  hoveredRouteId: Number,
   hideLines: Boolean,
   showJunctions: Boolean
 })
@@ -117,6 +118,10 @@ watch(
     },
     { deep: true }
 )
+
+watch(() => props.hoveredRouteId, () => {
+  renderRoutesOnMap()
+})
 
 function createMap() {
   if (!mapContainer.value) return
@@ -234,7 +239,8 @@ function renderRoutesOnMap() {
       props.currentRoute,
       props.stations,
       props.junctions,
-      (routeId, coordinates) => emit("routeRightClick", routeId, coordinates)
+      (routeId, coordinates, ctrlPressed) => emit("routeRightClick", routeId, coordinates, ctrlPressed),
+      props.hoveredRouteId
   )
 }
 
@@ -248,7 +254,7 @@ function renderLinesOnMap() {
       props.routes,
       props.stations,
       props.junctions,
-      (routeId, coordinates) => emit("routeRightClick", routeId, coordinates)   // clicking is detected for route segments so that other lines and junctions can be added
+      (routeId, coordinates, ctrlPressed) => emit("routeRightClick", routeId, coordinates, ctrlPressed)   // clicking is detected for route segments so that other lines and junctions can be added
   )
 }
 </script>

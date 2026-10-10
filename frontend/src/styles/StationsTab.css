@@ -1,3 +1,14 @@
+.stations-tab {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.name-filter-field {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
 .station-row {
     display: flex;
     margin-bottom: 5px;
@@ -6,4 +17,8 @@
 .station-row input {
     width: 100%;
     padding: 4px;
+}
+
+.stations-list {
+    overflow-y: auto;
 }

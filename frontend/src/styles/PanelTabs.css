@@ -2,50 +2,46 @@
     margin-top: 20px;
     display: flex;
     flex-direction: column;
+    flex: 1;
     min-height: 0;
 }
 
-/* Tabs row */
 .tabs {
     display: flex;
     gap: 5px;
-    margin-bottom: -1px; /* overlap with content border */
+    margin-bottom: -2px; /* overlap with content border */
 }
 
-/* Individual tab */
 .tab {
-    padding: 8px 16px;
+    padding: 8px 10px;
     border: 2px solid black;
-    border-bottom: none;
-    background: #ddd;
+    background: #dddddd;
     cursor: pointer;
-    position: relative;
-    top: 2px;
+    /* TODO set width once number of tabs is known */
 }
 
-/* Active tab */
 .tab.active {
     background: white;
     z-index: 2;
     top: 0;
+    border-bottom: none;
 }
 
-/* Content box */
 .tab-content {
     border: 2px solid black;
-    padding: 20px;
+    padding: 15px;
     background: white;
-    min-height: 150px;
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 0;
     overflow: hidden;
+    z-index: 1; /* cover the bottom border of the inactive tabs */
 }
 
-.tab-content > * {
+.tab-content-inside {
     display: flex;
-    flex-direction: column;
     flex: 1;
+    flex-direction: column;
     min-height: 0;
 }

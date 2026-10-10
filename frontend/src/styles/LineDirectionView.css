@@ -1,0 +1,25 @@
+.timetable {
+    max-height: 80vh;
+    overflow: auto;
+}
+
+table {
+    width: 100%;
+    table-layout: fixed; /* width of other rows is determined by width in first row */
+    border-collapse: collapse; /* single line borders */
+}
+
+th, td {
+    width: 70px;
+    border: 1px solid #aaaaaa;
+    text-align: center;
+}
+
+th {
+    background: #dddddd;
+    writing-mode: sideways-lr;   /* text is rotated by 90 degrees */
+    white-space: normal;
+    overflow-wrap: break-word;
+    max-height: 8em;
+    padding: 10px;
+}

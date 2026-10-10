@@ -1,6 +1,6 @@
 import L from "leaflet"
 
-export function renderRoutes(layerGroup, routes, currentRoute, stations, junctions, onRouteRightClick) {
+export function renderRoutes(layerGroup, routes, currentRoute, stations, junctions, onRouteRightClick, hoveredRouteId = null) {
 
     layerGroup.clearLayers()
 
@@ -21,17 +21,17 @@ export function renderRoutes(layerGroup, routes, currentRoute, stations, junctio
         })
         points.push([end.lat, end.lng])
 
+        const isHovered = route.id === hoveredRouteId
         const polyline = L.polyline(points, {
-            color: "grey",
-            weight: 3
+            color: isHovered ? "green" : "grey",
+            weight: isHovered ? 6 : 3
         })
 
         polyline.on("contextmenu", e => {
             L.DomEvent.stopPropagation(e)
-            onRouteRightClick(route.id, e.latlng) // callback for when this route was clicked
+            onRouteRightClick(route.id, e.latlng, e.originalEvent.ctrlKey) // callback for when this route was clicked and whether ctrl was pressed
         })
         polyline.addTo(layerGroup)
-
     })
 
     // route currently being created

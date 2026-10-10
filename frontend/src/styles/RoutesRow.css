@@ -1,0 +1,57 @@
+.routes-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 1.7rem;
+  align-items: center;
+  padding: 3px;
+  border: 1px solid #aaaaaa;
+  background: #fafafa;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.route-name {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.route-name-part {
+  overflow-wrap: anywhere;
+}
+
+.route-durations {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: center;
+  gap: 1px;
+}
+
+.duration-field {
+  display: contents;
+}
+
+.duration-inputs {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.duration-inputs input {
+  box-sizing: border-box;
+  width: 2.5rem;
+  min-width: 0;
+  padding: 1px 0 1px 3px;
+  border: 1px solid #aaaaaa;
+  font-size: 0.75rem;
+}
+
+.delete-route-button {
+  justify-self: end;
+  width: 1.2rem;
+  height: 1.2rem;
+  padding: 1px;
+  margin: 2px;
+  border: 1px solid #aaaaaa;
+  font-size: 1rem;
+  line-height: 1;
+}

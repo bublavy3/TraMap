@@ -1,0 +1,41 @@
+.popup-back {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    padding: 30px 100px;
+}
+
+.timetable-popup {
+    position: relative;
+    box-sizing: border-box;
+    width: 80%;
+    height: 99%;
+    padding: 25px;
+    border: 1px solid #afafaf;
+    border-radius: 10px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+}
+
+.timetable-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    border: 0;
+    background: #ffffff;
+    font-size: 30px;
+}
+
+.timetable-direction {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.timetable-direction-content {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+}

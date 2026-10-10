@@ -19,3 +19,7 @@
     border-color: #fafafa;
     background: #fafafa;
 }
+
+.focused-line-row {
+    border: 3px solid green;  /* TODO perhaps figure out highlighting by the color of the line? */
+}

@@ -1,15 +1,22 @@
 <script setup>
 import { TransportMode } from "../constants/transportModes.js"
+import { ref } from "vue"
+import TimetablePopup from "./TimetablePopup.vue"
 
 const props = defineProps({
   line: Object,
-  focused: Boolean,
+  routes: Object,
+  stations: Object,
+  junctions: Object,
+  focused: Boolean
 })
 
 const emit = defineEmits([
   "lineDeleted",
   "lineFocused"
 ])
+
+const timetableOpen = ref(false)
 
 function handleRowClick() {
   emit("lineFocused", props.line.id)
@@ -18,6 +25,15 @@ function handleRowClick() {
 function handleDeleteClick() {
   emit("lineDeleted", props.line.id)
 }
+
+function openTimetablePopup() {
+  timetableOpen.value = true
+}
+
+function closeTimetablePopup() {
+  timetableOpen.value = false
+}
+
 </script>
 
 <template>
@@ -43,10 +59,11 @@ function handleDeleteClick() {
       </option>
     </select>
 
-    <button title="Reserved action">⏲</button>
+    <button title="Open timetable" @click="openTimetablePopup">⏲</button>
 
     <button title="Delete line" @click="handleDeleteClick">🗑</button>
   </div>
+  <TimetablePopup v-if="timetableOpen" :line="line" :routes="routes" :stations="stations" :junctions="junctions" @close="closeTimetablePopup" />
 </template>
 
 <style src="../styles/LinesRow.css" scoped></style>
