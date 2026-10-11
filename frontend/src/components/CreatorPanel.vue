@@ -70,13 +70,13 @@ function uploadImage(fileSelection) {
 const currentText = computed(() => {    // this text will inform the user how to use the tool he has selected
   switch (props.activeTab) {
     case CreatorPanelTab.STATIONS:
-      return t("panel.textA")
+      return t("panel.infotextStationTab")
     case CreatorPanelTab.LINES:
-      return t("panel.textB")
+      return t("panel.infotextLinesTab")
     case CreatorPanelTab.ROUTES:
-      return t("panel.textB")
+      return t("panel.infotextRoutesTab")
     default:
-      return t("panel.textB")
+      return ""
   }
 })
 </script>
@@ -94,7 +94,8 @@ const currentText = computed(() => {    // this text will inform the user how to
       <input type="file" accept="image/*" @change="uploadImage" />
     </div>
 
-    <input type="text" :value="currentText" readonly />
+<!--    <input type="text" :value="currentText" readonly />-->
+    <div class="info-text">{{ currentText }}</div>
 
     <PanelTabs
       :stations="stations"

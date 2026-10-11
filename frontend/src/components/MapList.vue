@@ -1,5 +1,8 @@
 <script setup>
 import { maps } from "../data/maps"
+import { useI18n } from "vue-i18n"
+
+const { t } = useI18n()
 
 const hierarchy = {}
 
@@ -16,7 +19,7 @@ maps.forEach(m => {
 
 <template>
   <div class="map-list">
-    <h2>Select map</h2>
+    <h2>{{ t('mapList.selectMap') }}</h2>
     <details v-for="(countries, continent) in hierarchy" :key="continent">
       <summary>{{ continent }}</summary>
       <details v-for="(cities, country) in countries" :key="country" class="country">

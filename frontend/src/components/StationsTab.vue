@@ -1,5 +1,8 @@
 <script setup>
 import { ref, watch, onMounted } from "vue"
+import { useI18n } from "vue-i18n"
+
+const { t } = useI18n()
 
 const props = defineProps({
   stations: Object
@@ -38,7 +41,7 @@ function handleDeleteClick(stationId) {
 <template>
   <div class="stations-tab">
     <div class="stations-main-controls">
-      <input v-model="nameFilter" type="text" class="name-filter-field" placeholder="Filter by name"/>
+      <input v-model="nameFilter" type="text" class="name-filter-field" :placeholder="t('common.filterByName')"/>
     </div>
 
     <div class="stations-list">

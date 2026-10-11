@@ -1,5 +1,8 @@
 <script setup>
 import { ref } from "vue"
+import { useI18n } from "vue-i18n"
+
+const { t } = useI18n()
 
 const props = defineProps({
   route: Object,
@@ -47,9 +50,9 @@ function handleMouseLeave() {
         <span class="duration-label">⏳</span>
         <span class="duration-inputs">
           <input v-model.number="travelTimeMinutes" type="number" min="0" @input="updateDuration(travelTimeMinutes, travelTimeSeconds, 'travelTime')" />
-          <span>min</span>
+          <span>{{ t('common.minutesShort') }}</span>
           <input v-model.number="travelTimeSeconds" type="number" min="0" max="59" step="10" @input="updateDuration(travelTimeMinutes, travelTimeSeconds, 'travelTime')" />
-          <span>s</span>
+          <span>{{ t('common.secondsShort') }}</span>
         </span>
       </label>
 
@@ -59,9 +62,9 @@ function handleMouseLeave() {
         </span>
         <span class="duration-inputs">
           <input v-model.number="highTrafficTimeMinutes" type="number" min="0" @input="updateDuration(highTrafficTimeMinutes, highTrafficTimeSeconds, 'highTrafficTime')" />
-          <span>min</span>
+          <span>{{ t('common.minutesShort') }}</span>
           <input v-model.number="highTrafficTimeSeconds" type="number" min="0" max="59" step="10" @input="updateDuration(highTrafficTimeMinutes, highTrafficTimeSeconds, 'highTrafficTime')" />
-          <span>s</span>
+          <span>{{ t('common.secondsShort') }}</span>
         </span>
       </label>
 
@@ -71,9 +74,9 @@ function handleMouseLeave() {
         </span>
         <span class="duration-inputs">
           <input v-model.number="lowTrafficTimeMinutes" type="number" min="0" @input="updateDuration(lowTrafficTimeMinutes, lowTrafficTimeSeconds, 'lowTrafficTime')" />
-          <span>min</span>
+          <span>{{ t('common.minutesShort') }}</span>
           <input v-model.number="lowTrafficTimeSeconds" type="number" min="0" max="59" step="10" @input="updateDuration(lowTrafficTimeMinutes, lowTrafficTimeSeconds, 'lowTrafficTime')" />
-          <span>s</span>
+          <span>{{ t('common.secondsShort') }}</span>
         </span>
       </label>
     </div>

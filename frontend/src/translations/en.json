@@ -3,9 +3,75 @@
     "title": "Editor",
     "osm": "OpenStreetMap",
     "image": "Image",
-    "buttonA": "Add stations",
-    "buttonB": "Button B",
-    "textA": "Right click to add station",
-    "textB": "Not yet implemented"
+    "infotextStationTab": "Right-click on map to add station.",
+    "infotextLinesTab": "Right-click on route (or other line on that route if already assigned) to assign route to the selected line (line must be selected by click in the list). Lines are expected to be continuous, but can branch. Set operated directions and timetables for each line individually with its timetable button. Right-click + CTRL to remove clicked route from selected line.",
+    "infotextRoutesTab": "Right-click on station or junction to start creating route, right-click on place in map to change direction (start another segment), and right-click on second station or junction to finish the route. Right-click the point on route to create junction. Set travel times for routes to be used by timetables."
+  },
+  "common": {
+    "filterByName": "Filter by name",
+    "ascending": "Ascending",
+    "descending": "Descending",
+    "delete": "Delete",
+    "minutesShort": "min",
+    "secondsShort": "s"
+  },
+  "lines": {
+    "addLine": "Add line",
+    "allTransportModes": "All transport modes",
+    "sortByName": "Sort by name",
+    "sortByTransportMode": "Sort by transport mode",
+    "lineName": "Line name",
+    "lineColor": "Line color",
+    "openTimetable": "Open timetable",
+    "deleteLine": "Delete line"
+  },
+  "mapList": {
+    "selectMap": "Select map"
+  },
+  "tabs": {
+    "stations": "Stations",
+    "lines": "Lines",
+    "routes": "Routes"
+  },
+  "routes": {
+    "filterByStation": "Filter by station",
+    "filterByLine": "Filter by line",
+    "enableHighTrafficTimes": "Enable high traffic times",
+    "enableLowTrafficTimes": "Enable low traffic times"
+  },
+  "timetable": {
+    "startStation": "Start station",
+    "selectStation": "Select a station",
+    "passThrough": "Pass through",
+    "finalStation": "Final station",
+    "firstDepartureTime": "First departure time",
+    "interval": "Interval",
+    "minutes": "{count} minutes",
+    "lastDepartureTimeBefore": "Last departure time before",
+    "addSequence": "Add sequence",
+    "name": "Name",
+    "departureTime": "Departure time",
+    "lastDepartureTimeLimit": "Last departure time limit",
+    "close": "Close timetable",
+    "title": "Timetable",
+    "direction": "Direction",
+    "addNewDirection": "Add new direction",
+    "infotextTrafficTimebar": "Set busy hours and quiet hours for traffic, so that corresponding travel times on routes are used for timetable generation. Left-click to increase traffic level of the segment (each representing half an hour), right-click to decrease. Drag to set multiple segments to one level.",
+    "infotextDirectionControls": "Sequence represents an interval of vehicles operating in specified direction. Use passthrough stations if the path deviates from the shortest one between start and final station (taken via the line's routes). Last departure is limited by time after which no further departure will be generated. Multiple sequences on the same direction will be automatically merged and sorted in the timetable for that direction."
+  },
+  "traffic": {
+    "lowTrafficExpected": "Low traffic expected",
+    "standardTravelTimes": "Standard travel times",
+    "highTrafficExpected": "High traffic expected"
+  },
+  "transportModes": {
+    "bus": "Bus",
+    "trolleybus": "Trolleybus",
+    "tram": "Tram",
+    "metro": "Metro",
+    "train": "Train",
+    "ferry": "Ferry",
+    "gondola": "Gondola",
+    "funicular": "Funicular"
   }
 }

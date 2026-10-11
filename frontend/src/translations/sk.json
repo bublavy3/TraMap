@@ -3,9 +3,75 @@
     "title": "Editor",
     "osm": "OpenStreetMap",
     "image": "Obrázok",
-    "buttonA": "Pridávanie staníc",
-    "buttonB": "Tlačidlo B",
-    "textA": "Pravým tlačidlom pridávajte stanice",
-    "textB": "Zatiaľ neimplementované"
+    "infotextStationTab": "Pravým klikom na mapu pridávate stanice.",
+    "infotextLinesTab": "Pravým klikom na trasu (alebo inú linku na trase, ak už ju má nejaká priradená) priradíte trasu zvoľenej linke (linka musí byť zvolená v zozname). Linky musia byť súvislé, no môžu sa vetviť. Prevádzkované smery a harmonogramy nastavíte pre každú linku zvlášť jej tlačidlom harmonogramu. Pravým klikom + CTRL odstránite kliknutú trasu zo zvoľenej linky.",
+    "infotextRoutesTab": "Pravým klikom na stanicu alebo rázcestie začnete vytvárať trasu, pravým klikom na mapu zmeníte smer (pridáte ďalší segment), a pravým klikom na druhú stanicu alebo rázcetie dokončíte trasu. Pravým klikom na bod na trase pridáte rázcestie. Nezabudnite nastaviť časy prejazdu, ktoré sa použijú v harmonograme."
+  },
+  "common": {
+    "filterByName": "Filter - názov",
+    "ascending": "Vzostupne",
+    "descending": "Zostupne",
+    "delete": "Zmazať",
+    "minutesShort": "min",
+    "secondsShort": "s"
+  },
+  "lines": {
+    "addLine": "Pridať linku",
+    "allTransportModes": "Všetky prostriedky",
+    "sortByName": "Zoradenie - názov",
+    "sortByTransportMode": "Zoradenie - prostriedok",
+    "lineName": "Názov linky",
+    "lineColor": "Farba linky",
+    "openTimetable": "Otvoriť harmonogram",
+    "deleteLine": "Zmazať linku"
+  },
+  "mapList": {
+    "selectMap": "Voľba mapy"
+  },
+  "tabs": {
+    "stations": "Stanice",
+    "lines": "Linky",
+    "routes": "Trasy"
+  },
+  "routes": {
+    "filterByStation": "Filter - stanica",
+    "filterByLine": "Filter - linka",
+    "enableHighTrafficTimes": "Časy v rušnej premávke",
+    "enableLowTrafficTimes": "Časy v riedkej premávke"
+  },
+  "timetable": {
+    "startStation": "Počiatočná stanica",
+    "selectStation": "Zvoľte stanicu",
+    "passThrough": "Prejsť cez",
+    "finalStation": "Konečná stanica",
+    "firstDepartureTime": "Prvý odchod",
+    "interval": "Interval",
+    "minutes": "{count} minút",
+    "lastDepartureTimeBefore": "Posledný odchod pred",
+    "addSequence": "Pridať sekvenciu",
+    "name": "Názov",
+    "departureTime": "Prvý odchod",
+    "lastDepartureTimeLimit": "Posledný odchod pred",
+    "close": "Zatvoriť harmonogram",
+    "title": "Harmonogram",
+    "direction": "Smer",
+    "addNewDirection": "Nový smer",
+    "infotextTrafficTimebar": "Nastavte rušné a pokojné hodiny v premávke pre použitie zodpovedajúcich časov prejazdu trasami pri generovaní harmonogramu. Ľavým klikom zvýšite premávku v segmente (každý zodpovedá pol hodine), pravým klikom znížite. Ťahaním nastavíte viac segmentov na rovnakú úroveň.",
+    "infotextDirectionControls": "Sekvencia predstavuje plánovaný interval v ktorom spoj premáva daným smerom. Zadajte stanice, cez ktoré má spoj prejsť, ak sa má odchýliť od najkratšej cesty z počiatočnej do konečnej stanice (trasami, na ktorých linka premáva). Posledný odjazd je určený časom, po ktorom už nebude vygenerovaný ďalší odjazd. Viacero sekvencii v jednom smere bude automaticky zlúčených a utriedených v harmnograme pre daný smer."
+  },
+  "traffic": {
+    "lowTrafficExpected": "Očakávaná riedka premávka",
+    "standardTravelTimes": "Očakávaná štandardná premávka",
+    "highTrafficExpected": "Očakávaná rušná premávka"
+  },
+  "transportModes": {
+    "bus": "Autobus",
+    "trolleybus": "Trolejbus",
+    "tram": "Električka",
+    "metro": "Metro",
+    "train": "Vlak",
+    "ferry": "Loď",
+    "gondola": "Lanovka",
+    "funicular": "Zubačka"
   }
 }

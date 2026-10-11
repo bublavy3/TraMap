@@ -2,6 +2,9 @@
 import { TransportMode } from "../constants/transportModes.js"
 import { ref } from "vue"
 import TimetablePopup from "./TimetablePopup.vue"
+import { useI18n } from "vue-i18n"
+
+const { t } = useI18n()
 
 const props = defineProps({
   line: Object,
@@ -41,13 +44,13 @@ function closeTimetablePopup() {
     <input
         type="text"
         v-model="line.name"
-        placeholder="Line name"
+        :placeholder="t('lines.lineName')"
         class="line-name-input"
 
     />
 
     <input
-        title="Line color"
+        :title="t('lines.lineColor')"
         type="color"
         class="line-color-input"
         v-model="line.color"
@@ -55,13 +58,13 @@ function closeTimetablePopup() {
 
     <select v-model="line.transportMode" class="line-mode-select">
       <option v-for="mode in Object.values(TransportMode)" :key="mode" :value="mode">
-        {{ mode }}
+        {{ t(`transportModes.${mode}`) }}
       </option>
     </select>
 
-    <button title="Open timetable" @click="openTimetablePopup">⏲</button>
+    <button :title="t('lines.openTimetable')" @click="openTimetablePopup">⏲</button>
 
-    <button title="Delete line" @click="handleDeleteClick">🗑</button>
+    <button :title="t('lines.deleteLine')" @click="handleDeleteClick">🗑</button>
   </div>
   <TimetablePopup v-if="timetableOpen" :line="line" :routes="routes" :stations="stations" :junctions="junctions" @close="closeTimetablePopup" />
 </template>

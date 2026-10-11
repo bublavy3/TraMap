@@ -1,11 +1,14 @@
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   levels: Array
 })
 
-const levelNames = ['low traffic expected', 'standard travel times', 'high traffic expected']
+const levelNames = ['lowTrafficExpected', 'standardTravelTimes', 'highTrafficExpected']
 
 // when mouse is tugged across multiple blocks the new value of first one is set to all
 const tuggingMode = ref(false)
@@ -61,7 +64,7 @@ function stopPainting() {
     <div class="legend">
       <span v-for="(name, level) in levelNames" :key="name">
         <span class="legend-sample" :class="'level-' + level"></span>
-        {{ name }}
+        {{ t(`traffic.${name}`) }}
       </span>
     </div>
   </div>

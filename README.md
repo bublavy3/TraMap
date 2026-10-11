@@ -16,8 +16,7 @@ Here you will find:
 ## State of development
 
 This project is in ***early stage*** of development!
-Basis for the concepts of map utilization, stations, lines, routes and route junctions are now implemented but are not polished, 
-mostly serve as mock, and will keep receiving new functionality and functionality updates. 
+First iterations of concepts of map and tab utilization, stations, lines, routes, route junctions, timetables and traffic levels are now implemented, but are not polished and will keep receiving updates.
 Bugs and missing features are to be expected with this version of the prototype!
 
 ## Running the project
@@ -44,6 +43,8 @@ If you are running the project for the first time:
 | 1.5. 2026  | Ensure placed graphic network elements are fixed relative to map coordinates | Done        |
 | 2.5. 2026  | Implement station placement                                                  | Done        |
 | 17.5. 2026 | Improve home page                                                            | In progress |
-| 22.8. 2026 | Implement routes and junctions                                               | In progress |
+| 22.8. 2026 | Implement routes and junctions                                               | Done        |
 | 22.9. 2026 | Implement simple line placement                                              | Done        |
-| 25.9. 2026 | Improve line trunks with minimum crossings                                   | In progress |
+| 25.9. 2026 | Implement line trunks with minimum crossings                                 | In progress |
+| 8.10. 2026 | Implement timetable generation and linking of schedules                      | In progress |   
+

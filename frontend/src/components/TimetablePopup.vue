@@ -3,6 +3,9 @@ import { ref } from "vue"
 import LineDirectionEditor from "./LineDirectionEditor.vue"
 import LineDirectionView from "./LineDirectionView.vue"
 import {prepareRoutesByStation} from "../functions/prepareRoutesByStation.js";
+import { useI18n } from "vue-i18n"
+
+const { t } = useI18n()
 
 const props = defineProps({
   line: Object,
@@ -34,15 +37,15 @@ const stationsOnLine = Object.fromEntries(Object.entries(props.stations).filter(
 <template>
   <div class="popup-back">
     <div class="timetable-popup">
-      <button class="timetable-close" type="button" title="Close timetable" aria-label="Close timetable" @click="closePopup">×</button>
-      <h2 id="timetable-title">Timetable</h2>
+      <button class="timetable-close" type="button" :title="t('timetable.close')" @click="closePopup">×</button>
+      <h2 id="timetable-title">{{ t('timetable.title') }}</h2>
       <label class="timetable-direction">
-        <span>Direction</span>
+        <span>{{ t('timetable.direction') }}</span>
         <select v-model="direction">
           <option v-for="key in Object.keys(line.directions)" :key="key" :value="key">
             {{ key }}
           </option>
-          <option :value="NEW_DIRECTION">Add new direction</option>
+          <option :value="NEW_DIRECTION">{{ t('timetable.addNewDirection') }}</option>
         </select>
       </label>
 

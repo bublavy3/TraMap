@@ -1,6 +1,9 @@
 <script setup>
 import TrafficTimeBar from "./TrafficTimeBar.vue";
-import {ref} from "vue";
+import { ref } from "vue";
+import { useI18n } from "vue-i18n"
+
+const { t } = useI18n()
 
 const props = defineProps({
   line: Object,
@@ -57,51 +60,53 @@ function deleteSequence(directionName, sequenceId) {
 
 <template>
   <div class="lineDirectionEditor">
+    <div class="info-text">{{ t('timetable.infotextTrafficTimebar') }}</div>
     <TrafficTimeBar :levels="props.line.trafficLevels" />
 
+    <div class="info-text">{{ t('timetable.infotextDirectionControls') }}</div>
     <div class="pathRow">
-      <label>Start station
+      <label>{{ t('timetable.startStation') }}
         <select v-model="startStation">
-          <option disabled value="">Select a station</option>
+          <option disabled value="">{{ t('timetable.selectStation') }}</option>
           <option v-for="station in stations" :key="station.id" :value="station.id">{{ station.name }}</option>
         </select>
       </label>
-      <label>Pass through
-        <select v-model="passthroughStations" multiple size="1" aria-label="Pass through stations">
+      <label>{{ t('timetable.passThrough') }}
+        <select v-model="passthroughStations" multiple size="1">
           <option v-for="station in stations" :key="station.id" :value="station.id">{{ station.name }}</option>
         </select>
       </label>
-      <label>Final station
+      <label>{{ t('timetable.finalStation') }}
         <select v-model="endStation">
-          <option disabled value="">Select a station</option>
+          <option disabled value="">{{ t('timetable.selectStation') }}</option>
           <option v-for="station in stations" :key="station.id" :value="station.id">{{ station.name }}</option>
         </select>
       </label>
     </div>
 
     <div class="scheduleRow">
-      <label>First departure time
+      <label>{{ t('timetable.firstDepartureTime') }}
         <input v-model="startTime" type="time">
       </label>
-      <label>Interval
+      <label>{{ t('timetable.interval') }}
         <select v-model.number="interval">
-          <option v-for="minutes in intervals" :key="minutes" :value="minutes">{{ minutes }} minutes</option>
+          <option v-for="minutes in intervals" :key="minutes" :value="minutes">{{ t('timetable.minutes', { count: minutes }) }}</option>
         </select>
       </label>
-      <label>Last departure time before
+      <label>{{ t('timetable.lastDepartureTimeBefore') }}
         <input v-model="endTime" type="time">
       </label>
     </div>
 
-    <button type="button" @click="addSequence">Add sequence</button>
+    <button type="button" @click="addSequence">{{ t('timetable.addSequence') }}</button>
 
     <table>
       <thead>
       <tr>
-        <th>Name</th>
-        <th>Departure time</th>
-        <th>Last departure time limit</th>
-        <th>Interval</th>
+        <th>{{ t('timetable.name') }}</th>
+        <th>{{ t('timetable.departureTime') }}</th>
+        <th>{{ t('timetable.lastDepartureTimeLimit') }}</th>
+        <th>{{ t('timetable.interval') }}</th>
         <th></th>
       </tr>
       </thead>
@@ -112,8 +117,8 @@ function deleteSequence(directionName, sequenceId) {
           <td>{{ direction.name }}</td>
           <td>{{ sequence.startTime }}</td>
           <td>{{ sequence.endTime }}</td>
-          <td>{{ sequence.interval }} min</td>
-          <td><button type="button" @click="deleteSequence(direction.name, sequence.id)">Delete</button></td>
+          <td>{{ sequence.interval }} {{ t('common.minutesShort') }}</td>
+          <td><button type="button" @click="deleteSequence(direction.name, sequence.id)">{{ t('common.delete') }}</button></td>
         </tr>
       </template>
       </tbody>

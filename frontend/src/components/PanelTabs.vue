@@ -4,6 +4,9 @@ import { CreatorPanelTab } from "../constants/creatorPanelTabs.js";
 import StationsTab from "./StationsTab.vue";
 import LinesTab from "./LinesTab.vue";
 import RoutesTab from "./RoutesTab.vue";
+import { useI18n } from "vue-i18n"
+
+const { t } = useI18n()
 
 const props = defineProps({
   stations: Object,
@@ -54,7 +57,7 @@ function handleRouteDeleted(lineId) {
   <div class="tabs-container">
     <div class="tabs">
       <div v-for="tab in tabs" :key="tab" class="tab" :class="{ active: activeTab === tab }" @click="selectTab(tab)">
-        {{ tab }}
+        {{ t(`tabs.${tab}`) }}
       </div>
     </div>
 

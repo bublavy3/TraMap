@@ -2,6 +2,9 @@
 import { ref, watch, onMounted } from "vue"
 import LinesRow from "./LinesRow.vue"
 import { TransportMode } from "../constants/transportModes.js"
+import { useI18n } from "vue-i18n"
+
+const { t } = useI18n()
 
 const props = defineProps({
   lines: Object,
@@ -102,26 +105,26 @@ function handleDeleteLine(lineId) {
 <template>
   <div class="lines-tab">
     <div class="lines-main-controls">
-      <button type="button" class="lines-add-button" title="Add line" @click="addLine">+</button>
+      <button type="button" class="lines-add-button" :title="t('lines.addLine')" @click="addLine">+</button>
 
       <div class="lines-filtering-and-sorting">
-        <input v-model="nameFilter" type="text" class="lines-filter-or-sort-field" placeholder="Filter by name"/>
+        <input v-model="nameFilter" type="text" class="lines-filter-or-sort-field" :placeholder="t('common.filterByName')"/>
 
         <select v-model="transportModeFilter" class="lines-filter-or-sort-field">
-          <option value="all">All transport modes</option>
+          <option value="all">{{ t('lines.allTransportModes') }}</option>
           <option v-for="mode in Object.values(TransportMode)" :key="mode" :value="mode">
-            {{ mode }}
+            {{ t(`transportModes.${mode}`) }}
           </option>
         </select>
 
         <select v-model="sortingCriteria" class="lines-filter-or-sort-field">
-          <option value="name">Sort by name</option>
-          <option value="transportMode">Sort by transport mode</option>
+          <option value="name">{{ t('lines.sortByName') }}</option>
+          <option value="transportMode">{{ t('lines.sortByTransportMode') }}</option>
         </select>
 
         <select v-model="sortingDirection" class="lines-filter-or-sort-field">
-          <option value="ascending">Ascending</option>
-          <option value="descending">Descending</option>
+          <option value="ascending">{{ t('common.ascending') }}</option>
+          <option value="descending">{{ t('common.descending') }}</option>
         </select>
       </div>
     </div>

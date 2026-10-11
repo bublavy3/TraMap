@@ -1,6 +1,9 @@
 <script setup>
 import { ref, watch, onMounted } from "vue"
 import RoutesRow from "./RoutesRow.vue"
+import { useI18n } from "vue-i18n"
+
+const { t } = useI18n()
 
 const props = defineProps({
   routes: Object,
@@ -61,18 +64,18 @@ function handleRouteHover(routeId) {
   <div class="routes-tab">
     <div class="routes-main-controls">
       <div class="routes-filtering">
-        <input v-model="stationFilter" type="text" class="routes-filter-field" placeholder="Filter by station"/>
+        <input v-model="stationFilter" type="text" class="routes-filter-field" :placeholder="t('routes.filterByStation')"/>
 
-        <input v-model="lineFilter" type="text" class="routes-filter-field" placeholder="Filter by line"/>
+        <input v-model="lineFilter" type="text" class="routes-filter-field" :placeholder="t('routes.filterByLine')"/>
 
         <label class="routes-checkbox-label">
           <input type="checkbox" v-model="enableHighTrafficTimes"/>
-          Enable high traffic times
+          {{ t('routes.enableHighTrafficTimes') }}
         </label>
 
         <label class="routes-checkbox-label">
           <input type="checkbox" v-model="enableLowTrafficTimes"/>
-          Enable low traffic times
+          {{ t('routes.enableLowTrafficTimes') }}
         </label>
       </div>
     </div>
