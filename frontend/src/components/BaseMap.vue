@@ -157,6 +157,9 @@ function createMap() {
   lineLayerGroup = L.layerGroup().addTo(map)
   map.createPane("stationPane") // Pane to have stations always on top of lines and routes
   map.getPane("stationPane").style.zIndex = 500
+  if (props.mode === "image" && props.imageUrl) {
+    loadImage(props.imageUrl)
+  }
   renderRoutesOnMap()
   if (!props.hideLines) {
     renderLinesOnMap()

@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "npm run build && wrangler deploy --config dist/tramap/wrangler.json",
+    "db:migrate:local": "wrangler d1 migrations apply tramap-db --local --persist-to .wrangler/state --config ../wrangler.jsonc",
+    "db:migrate:remote": "wrangler d1 migrations apply tramap-db --remote --config ../wrangler.jsonc"
   },
   "dependencies": {
     "leaflet": "^1.9.4",
@@ -16,7 +19,9 @@
     "vue-router": "^5.0.4"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.63.2",
     "@vitejs/plugin-vue": "^6.0.5",
-    "vite": "^8.0.1"
+    "vite": "^8.0.1",
+    "wrangler": "^4.150.0"
   }
 }

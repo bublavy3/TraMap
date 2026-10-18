@@ -3,9 +3,13 @@ import { ref } from "vue"
 import { CreatorPanelTab } from "../constants/creatorPanelTabs.js";
 import CreatorMap from "../components/CreatorMap.vue"
 import CreatorPanel from "../components/CreatorPanel.vue"
+import SaveProjectDialog from "../components/SaveProjectDialog.vue"
+import LoadProjectDialog from "../components/LoadProjectDialog.vue"
 
 const mode = ref("osm")
 const imageUrl = ref(null)
+const backgroundImageFile = ref(null)
+const backgroundImageIsSaved = ref(false)
 const activeTab = ref(CreatorPanelTab.STATIONS)
 const stations = ref({})
 const junctions = ref({})
@@ -16,15 +20,129 @@ const currentLineId = ref(null)
 const hoveredRouteId = ref(null)
 const hideLines = ref(false)
 const showJunctions = ref(false)
+const projectId = ref(null)
+const projectName = ref("")
+const saveDialogOpen = ref(false)
+const loadDialogOpen = ref(false)
+const savingPending = ref(false)
+const loadingPending = ref(false)
+const errorMessage = ref("")
 
 // in diploma thesis version only 2 underlay modes will be supported - OpenStreetMap and image, but in future there might be desire to add more map providers for example, or raw map data import
 function handleModeChange(newMode) {
   mode.value = newMode
 }
 
-function handleImageUpload(url) {
+function handleImageUpload({ url, file }) {
+  if (imageUrl.value?.startsWith("blob:")) {  // blob is a browser storage type for url that contains the stringified image, after it's used it must be removed
+    URL.revokeObjectURL(imageUrl.value)
+  }
   imageUrl.value = url
+  backgroundImageFile.value = file
+  backgroundImageIsSaved.value = false
 }
+
+function openSaveDialog() {
+  saveDialogOpen.value = true
+}
+
+function openLoadDialog() {
+  loadDialogOpen.value = true
+}
+
+function closeDialog() {
+  saveDialogOpen.value = false
+  loadDialogOpen.value = false
+  errorMessage.value = ""
+}
+
+async function saveProject(name) {
+  name = name.trim()
+  if (!name) {
+    return
+  }
+  const updatingCurrentProject = name === projectName.value
+  const newProjectId = updatingCurrentProject ? projectId.value : crypto.randomUUID()
+  const snapshot = {
+    mode: mode.value,
+    stations: stations.value,
+    junctions: junctions.value,
+    routes: routes.value,
+    lines: lines.value,
+  }
+  const form = new FormData()
+  form.set("snapshot", JSON.stringify(snapshot))
+  form.set("name", name)
+
+  if (mode.value === "image" && backgroundImageFile.value) {  // newly uploaded background image
+    form.set("backgroundImage", backgroundImageFile.value)
+  } else if (mode.value === "image" && imageUrl.value && backgroundImageIsSaved.value) {
+    if (updatingCurrentProject) { // updating this project, no change to background
+      form.set("keepBackground", "true")
+    } else if (projectId.value) { // saving new project from this one (with the same background)
+      form.set("copyBackground", projectId.value)
+    }
+  }
+
+  savingPending.value = true
+  errorMessage.value = ""
+  try {
+    const response = await fetch(`/api/projects/${newProjectId}`, {
+      method: "PUT",
+      body: form,
+    })
+    const result = await response.json()
+    if (!response.ok) {
+      throw new Error(result.error || "Something went wrong while saving the project")
+    }
+    
+    backgroundImageFile.value = null
+    backgroundImageIsSaved.value = result.imageUrl != null
+    projectId.value = newProjectId
+    projectName.value = name
+    saveDialogOpen.value = false
+  } catch (error) {
+    errorMessage.value = error.message
+  } finally { // in finally it's guaranteed that we don't get locked with saving pending even if there is an error
+    savingPending.value = false
+  }
+}
+
+async function loadProject(newProjectId) {
+  loadingPending.value = true
+  errorMessage.value = ""
+  try {
+    const response = await fetch(`/api/projects/${newProjectId}`)
+    const result = await response.json()
+    if (!response.ok) {
+      throw new Error(result.error || "Could not load the project")
+    }
+
+    if (imageUrl.value?.startsWith("blob:")) {
+      URL.revokeObjectURL(imageUrl.value)
+    }
+    mode.value = result.mode
+    imageUrl.value = result.imageUrl
+    backgroundImageFile.value = null
+    backgroundImageIsSaved.value = Boolean(result.imageUrl)
+    stations.value = result.stations
+    junctions.value = result.junctions
+    routes.value = result.routes
+    lines.value = result.lines
+    currentRoute.value = null
+    currentLineId.value = null
+    hoveredRouteId.value = null
+    projectId.value = result.id
+    projectName.value = result.name
+    loadDialogOpen.value = false
+  } catch (error) {
+    errorMessage.value = error.message
+  } finally {
+    loadingPending.value = false
+  }
+}
+
+defineExpose({ saveProject, loadProject })
 
 function handleTabChange(tab) {
   activeTab.value = tab
@@ -255,6 +373,23 @@ function addStation(coordinates) {
         @routeHovered="handleRouteHovered"
         @stationDeleted="handleStationDeleted"
         @routeDeleted="handleRouteDeleted"
+        @load-project="openLoadDialog"
+        @save-project="openSaveDialog"
+    />
+    <SaveProjectDialog
+        v-if="saveDialogOpen"
+        :originalName="projectName"
+        :savingPending="savingPending"
+        :errorMessage="errorMessage"
+        @save="saveProject"
+        @close="closeDialog"
+    />
+    <LoadProjectDialog
+        v-if="loadDialogOpen"
+        :loadingPending="loadingPending"
+        :errorMessage="errorMessage"
+        @load="loadProject"
+        @close="closeDialog"
     />
   </div>
 </template>

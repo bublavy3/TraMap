@@ -22,3 +22,12 @@
     letter-spacing: -0.3px;
     text-align: justify;
 }
+
+.project-panel {
+    display: flex;
+    gap: 5px;
+}
+
+.project-panel select {
+    flex: 1;
+}

@@ -1,0 +1,14 @@
+{
+  "name": "tramap",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "deploy": "npm --prefix frontend run deploy",
+    "db:migrate:local": "npm --prefix frontend run db:migrate:local",
+    "db:migrate:remote": "npm --prefix frontend run db:migrate:remote"
+  },
+  "dependencies": {
+    "leaflet-polylineoffset": "^1.1.1"
+  }
+}

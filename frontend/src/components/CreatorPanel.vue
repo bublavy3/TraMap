@@ -21,7 +21,9 @@ const emit = defineEmits([
   "lineDeleted",
   "routeHovered",
   "stationDeleted",
-  "routeDeleted"
+  "routeDeleted",
+  "loadProject",
+  "saveProject"
 ])
 
 const { t } = useI18n()   // t will be the translation function used for texts being in user's selected language
@@ -60,11 +62,18 @@ function uploadImage(fileSelection) {
   const file = fileSelection.target.files[0]
   if (!file) return
 
-  const reader = new FileReader()
-  reader.onload = (imageRead) => {
-    emit("imageUploaded", imageRead.target.result)    // image.target.result contains the file
-  }
-  reader.readAsDataURL(file)    // read the file and encode it as string
+  emit("imageUploaded", {
+    url: URL.createObjectURL(file), // Leaflet takes the image as a string encoded in URL
+    file  // used for saving to db
+  })
+}
+
+function loadProject() {
+  emit("loadProject")
+}
+
+function saveProject() {
+  emit("saveProject")
 }
 
 const currentText = computed(() => {    // this text will inform the user how to use the tool he has selected
@@ -85,16 +94,19 @@ const currentText = computed(() => {    // this text will inform the user how to
   <div class="panel">
     <h2>{{ t('panel.title') }}</h2>
 
-    <select :value="mode" @change="changeMode">
-      <option value="osm">{{ t('panel.osm') }}</option>
-      <option value="image">{{ t('panel.image') }}</option>
-    </select>
-
-    <div v-if="mode === 'image'">
-      <input type="file" accept="image/*" @change="uploadImage" />
+    <div class="project-panel">
+      <select :value="mode" @change="changeMode">
+        <option value="osm">{{ t('panel.osm') }}</option>
+        <option value="image">{{ t('panel.image') }}</option>
+      </select>
+      <button type="button" class="file-button" @click="loadProject">📂</button>
+      <button type="button" class="file-button" @click="saveProject">💾</button>
     </div>
 
-<!--    <input type="text" :value="currentText" readonly />-->
+    <div v-if="mode === 'image'">
+      <input type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/avif" @change="uploadImage" />
+    </div>
+
     <div class="info-text">{{ currentText }}</div>
 
     <PanelTabs

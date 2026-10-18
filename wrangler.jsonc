@@ -1,0 +1,24 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "tramap",
+  "main": "backend/worker.js",
+  "compatibility_date": "2026-10-13",
+  "assets": {
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "tramap-db",
+      "database_id": "a99ce7dd-1ca1-42eb-983a-01a4e38bf893",
+      "migrations_dir": "backend/migrations"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "BACKGROUNDS",
+      "id": "2c828db4e72f40ba80c219ac6f88f0a3"
+    }
+  ]
+}

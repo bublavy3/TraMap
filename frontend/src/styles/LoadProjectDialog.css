@@ -1,0 +1,71 @@
+.popup-back {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+}
+
+.project-dialog {
+    box-sizing: border-box;
+    width: min(100%, 460px);
+    max-height: min(80vh, 600px);
+    overflow: auto;
+    padding: 20px;
+    background: white;
+    position: relative;
+}
+
+.project-dialog-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    border: 0;
+    background: #ffffff;
+    font-size: 30px;
+}
+
+.project-search {
+    display: grid;
+    gap: 8px;
+}
+
+.project-search-controls {
+    display: flex;
+    gap: 8px;
+}
+
+input {
+    box-sizing: border-box;
+    flex: 1;
+    min-width: 0;
+    padding: 9px;
+}
+
+button {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.project-results {
+    display: grid;
+    gap: 6px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 0;
+    list-style: none;
+}
+
+.project-results button {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    text-align: left;
+}
+
+.project-dialog-error {
+    color: darkred;
+}

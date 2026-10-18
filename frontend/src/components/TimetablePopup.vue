@@ -37,7 +37,7 @@ const stationsOnLine = Object.fromEntries(Object.entries(props.stations).filter(
 <template>
   <div class="popup-back">
     <div class="timetable-popup">
-      <button class="timetable-close" type="button" :title="t('timetable.close')" @click="closePopup">×</button>
+      <button class="timetable-close" type="button" :title="t('common.close')" @click="closePopup">×</button>
       <h2 id="timetable-title">{{ t('timetable.title') }}</h2>
       <label class="timetable-direction">
         <span>{{ t('timetable.direction') }}</span>
