@@ -1,4 +1,4 @@
-export const CreatorPanelTab = Object.freeze({
+export const PanelTab = Object.freeze({
     STATIONS: 'stations',
     ROUTES: 'routes',
     LINES: 'lines'

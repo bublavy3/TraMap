@@ -1,0 +1,75 @@
+.direction-visualization-container {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 30px;
+    flex: 1;
+}
+
+.direction-visualization {
+    position: relative;
+    height: 220px;
+}
+
+.line {
+    position: absolute;
+    top: 157px;               /* 160px minus half of the 6px line height */
+    left: 0;
+    right: 0;
+    height: 6px;
+}
+
+.stop-column {
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);  /* center the column on its position */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.name, .time {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+}
+
+.name {
+    height: 150px;
+    margin-bottom: 0;
+    font-size: 15px;
+    color: #333333;
+    font-weight: bold;
+    white-space: nowrap;
+    box-sizing: border-box;
+    text-align: start;
+    transform: rotate(180deg) translateY(5px);  /* translateY was the only way I found to make a gap from the dot */
+}
+
+.dot {
+    width: 20px;
+    height: 20px;
+    box-sizing: border-box;
+    border: 2px solid black;
+    border-radius: 50%; /* makes a circle */
+    background: white;
+    position: relative;
+    z-index: 1500;
+}
+
+.time {
+    margin-top: 10px;
+    font-size: 15px;
+    color: #777777;
+    font-weight: bold;
+}
+
+/* AI figured these triangles out */
+.arrow {
+    position: absolute;
+    top: 160px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 18px solid;
+    transform: translate(-50%, -50%);
+}

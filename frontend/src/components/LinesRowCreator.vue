@@ -1,7 +1,7 @@
 <script setup>
 import { TransportMode } from "../constants/transportModes.js"
 import { ref } from "vue"
-import TimetablePopup from "./TimetablePopup.vue"
+import LineTimetableDialog from "./LineTimetableDialog.vue"
 import { useI18n } from "vue-i18n"
 
 const { t } = useI18n()
@@ -62,11 +62,11 @@ function closeTimetablePopup() {
       </option>
     </select>
 
-    <button :title="t('lines.openTimetable')" @click="openTimetablePopup">⏲</button>
+    <button :title="t('common.openTimetable')" @click="openTimetablePopup">⏲</button>
 
     <button :title="t('lines.deleteLine')" @click="handleDeleteClick">🗑</button>
   </div>
-  <TimetablePopup v-if="timetableOpen" :line="line" :routes="routes" :stations="stations" :junctions="junctions" @close="closeTimetablePopup" />
+  <LineTimetableDialog v-if="timetableOpen" :line="line" :routes="routes" :stations="stations" :junctions="junctions" :editing-allowed="true" @close="closeTimetablePopup" />
 </template>
 
-<style src="../styles/LinesRow.css" scoped></style>
+<style src="../styles/LinesRowCreator.css" scoped></style>

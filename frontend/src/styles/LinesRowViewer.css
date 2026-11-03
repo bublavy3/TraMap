@@ -1,0 +1,28 @@
+.line-row {
+    display: grid;
+    grid-template-columns: 25px minmax(0, 1fr) minmax(0, 1fr) 25px;
+    gap: 10px;
+    align-items: center;
+    padding: 0 5px 3px 8px;     /* enough padding at sides to have space for clicking the line to focus it */
+    border-bottom: 1px solid #aaaaaa;
+    font-size: 0.8rem;
+}
+
+.line-name {
+    display: flex;
+    justify-items: start;
+}
+
+.line-color {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #222222;
+}
+
+button {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

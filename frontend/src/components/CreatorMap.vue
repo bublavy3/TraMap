@@ -1,5 +1,11 @@
 <script setup>
+import { watch } from "vue"
 import BaseMap from "./BaseMap.vue"
+import L from "leaflet"
+import { renderStations } from "../functions/renderStations.js"
+import { renderRoutes } from "../functions/renderRoutes.js"
+import { renderLines } from "../functions/renderLines.js"
+import { renderJunctions } from "../functions/renderJunctions.js"
 
 const props = defineProps({
   mode: String,
@@ -15,39 +21,113 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-    "mapRightClick",
-    "stationRightClick",
-    "routeRightClick",
+  "mapRightClick",
+  "stationRightClick",
+  "routeRightClick"
 ])
 
-// for now all we do on right click is add stations to the map, the provided functionality will of course be largely expanded
-function handleMapRightClick(coordinates) {
-  emit("mapRightClick", coordinates)
+let map = null
+let stationLayerGroup = null
+let junctionLayerGroup = null
+let routeLayerGroup = null
+let lineLayerGroup = null
+
+function handleMapReady(readyMap) {
+  map = readyMap
+
+  // Stations and junctions use their own pane to stay above routes and lines.
+  map.createPane("stationPane")
+  map.getPane("stationPane").style.zIndex = 500
+
+  stationLayerGroup = L.layerGroup().addTo(map)
+  junctionLayerGroup = L.layerGroup().addTo(map)
+  routeLayerGroup = L.layerGroup().addTo(map)
+  lineLayerGroup = L.layerGroup().addTo(map)
+
+  map.on("contextmenu", event => {
+    event.originalEvent.preventDefault()
+    emit("mapRightClick", event.latlng)
+  })
+
+  renderStationsLayer()
+  renderJunctionsLayer()
+  renderRoutesLayer()
+  renderLinesLayer()
 }
 
-function handleStationRightClick(stationId) {
-  emit("stationRightClick", stationId)
+function renderStationsLayer() {
+  renderStations(stationLayerGroup, props.stations, stationId => emit("stationRightClick", stationId))
 }
 
-function handleRouteRightClick(routeId, coordinates, ctrlPressed) {
-  emit("routeRightClick", routeId, coordinates, ctrlPressed)
+function renderJunctionsLayer() {
+  if (!props.showJunctions) {
+    junctionLayerGroup.clearLayers()
+    return
+  }
+  renderJunctions(junctionLayerGroup, props.junctions, junctionId => emit("stationRightClick", junctionId))
 }
+
+function renderRoutesLayer() {
+  renderRoutes(
+    routeLayerGroup,
+    props.routes,
+    props.currentRoute,
+    props.stations,
+    props.junctions,
+    (routeId, coordinates, ctrlPressed) => emit("routeRightClick", routeId, coordinates, ctrlPressed),
+    props.hoveredRouteId
+  )
+}
+
+function renderLinesLayer() {
+  if (props.hideLines) {
+    lineLayerGroup.clearLayers()
+    return
+  }
+  renderLines(
+    lineLayerGroup,
+    props.lines,
+    props.routes,
+    props.stations,
+    props.junctions,
+    (routeId, coordinates, ctrlPressed) => emit("routeRightClick", routeId, coordinates, ctrlPressed)
+  )
+}
+
+watch(() => props.stations, () => {
+  renderStationsLayer()
+}, { deep: true })
+
+watch(() => props.junctions, () => {
+  renderJunctionsLayer()
+  renderRoutesLayer()
+  renderLinesLayer()
+}, { deep: true })
+
+watch(() => props.showJunctions, renderJunctionsLayer)
+
+watch(() => props.routes, () => {
+  renderRoutesLayer()
+  renderLinesLayer()
+}, { deep: true })
+
+watch(() => props.lines, () => {
+  renderLinesLayer()
+}, { deep: true })
+
+watch(() => props.hideLines, () => {
+  renderLinesLayer()
+})
+
+watch(() => props.currentRoute, () => {
+  renderRoutesLayer()
+}, { deep: true })
+
+watch(() => props.hoveredRouteId, () => {
+  renderRoutesLayer()
+})
 </script>
 
 <template>
-  <BaseMap
-      :mode="mode"
-      :imageUrl="imageUrl"
-      :stations="stations"
-      :junctions="junctions"
-      :routes="routes"
-      :lines="lines"
-      :currentRoute="currentRoute"
-      :hoveredRouteId="hoveredRouteId"
-      :hideLines="hideLines"
-      :showJunctions="showJunctions"
-      @mapRightClick="handleMapRightClick"
-      @stationRightClick="handleStationRightClick"
-      @routeRightClick="handleRouteRightClick"
-  />
+  <BaseMap :mode="mode" :imageUrl="imageUrl" @mapReady="handleMapReady" />
 </template>

@@ -1,0 +1,71 @@
+.menu-bar {
+  display: flex;
+  width: 100%;
+  height: 50px;
+  border-bottom: 1px solid #cccccc;
+}
+
+.menu-logo, .menu-general-button, .continent-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.menu-logo, .menu-general {
+  flex: 1 1 0; /* grow allowed, shrink allowed, start from 0% share for each item to distribute free space equally among them */
+}
+
+.continent-tabs {
+  display: flex;
+  flex: 6 1 0;  /* 6 shares of the same space */
+}
+
+.continent-tab {
+  position: relative; /* required for the dropdown to work */
+  flex: 1 1 0;
+  border-left: 1px solid #cccccc;
+}
+
+.continent-button {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #ffffff;
+}
+
+.continent-button:hover, .menu-general-button:hover {
+  background: #eeeeee;
+}
+
+.continent-dropdown {
+  display: none;  /* do not display unless hovered */
+  border: 1px solid #cccccc;
+}
+
+.continent-tab:hover .continent-dropdown {  /* only apply to continent-dropdown when continent-tab parent is hovered */
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.country-option, .empty-country-list {
+  padding: 8px;
+  border: 0;
+  background: #ffffff;
+  text-align: left;
+  z-index: 2000;
+}
+
+.country-option:hover {
+  background: #eeeeee;
+}
+
+.menu-general {
+  display: flex;
+}
+
+.menu-general-button {
+  flex: 1 1 0;
+  border-left: 1px solid #cccccc;
+}

@@ -7,13 +7,28 @@
     "infotextLinesTab": "Pravým klikom na trasu (alebo inú linku na trase, ak už ju má nejaká priradená) priradíte trasu zvoľenej linke (linka musí byť zvolená v zozname). Linky musia byť súvislé, no môžu sa vetviť. Prevádzkované smery a harmonogramy nastavíte pre každú linku zvlášť jej tlačidlom harmonogramu. Pravým klikom + CTRL odstránite kliknutú trasu zo zvoľenej linky.",
     "infotextRoutesTab": "Pravým klikom na stanicu alebo rázcestie začnete vytvárať trasu, pravým klikom na mapu zmeníte smer (pridáte ďalší segment), a pravým klikom na druhú stanicu alebo rázcetie dokončíte trasu. Pravým klikom na bod na trase pridáte rázcestie. Nezabudnite nastaviť časy prejazdu, ktoré sa použijú v harmonograme."
   },
+  "projectDialog": {
+    "saveTitle": "Uložiť projekt",
+    "loadTitle": "Načítať projekt",
+    "name": "Názov projektu",
+    "countries": "Štáty",
+    "countriesMultiselectHint": "Použite CTRL pre výber viacerých štátov",
+    "search": "Hľadať podľa názvu",
+    "searchButton": "Hľadať",
+    "searching": "Vyhľadávanie...",
+    "savingPending": "Ukladanie...",
+    "save": "Uložiť",
+    "cancel": "Zrušiť",
+    "searchFailed": "Došlo k chybe pri vyhľadávaní."
+  },
   "common": {
     "filterByName": "Filter - názov",
     "ascending": "Vzostupne",
     "descending": "Zostupne",
     "delete": "Zmazať",
     "minutesShort": "min",
-    "secondsShort": "s"
+    "secondsShort": "s",
+    "openTimetable": "Otvoriť harmonogram"
   },
   "lines": {
     "addLine": "Pridať linku",
@@ -22,11 +37,23 @@
     "sortByTransportMode": "Zoradenie - prostriedok",
     "lineName": "Názov linky",
     "lineColor": "Farba linky",
-    "openTimetable": "Otvoriť harmonogram",
     "deleteLine": "Zmazať linku"
   },
   "mapList": {
     "selectMap": "Voľba mapy"
+  },
+  "home": {
+    "logo": "TraMap",
+    "continentNames": { "Europe": "Európa", "Asia": "Ázia", "Africa": "Afrika", "North America": "Severná Amerika", "South America": "Južná Amerika", "Oceania": "Oceánia" },
+    "about": "O projekte",
+    "login": "Prihlásenie",
+    "searchPlaceholder": "Zadajte sieť, mesto alebo štát...",
+    "searching": "Načítavam projekty...",
+    "searchFailed": "Došlo k chybe pri vyhľadávaní.",
+    "noResults": "Nenašli sa žiadne projekty.",
+    "noCountries": "Zatiaľ bez projektov",
+    "creatorSuggestionText": "Ste dopravný podnik? Chcete vytvoriť a publikovať / vytlačiť vlastnú mapu verejnej dopravy?",
+    "createMap": "Vytvoriť mapu dopravy"
   },
   "tabs": {
     "stations": "Stanice",

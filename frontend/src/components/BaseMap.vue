@@ -1,38 +1,19 @@
 <script setup>
 import { onMounted, onBeforeUnmount, watch, nextTick, ref } from "vue"
-import { renderStations } from "../functions/renderStations.js"
-import { renderRoutes } from "../functions/renderRoutes.js"
-import { renderLines } from "../functions/renderLines.js"
-import { renderJunctions } from "../functions/renderJunctions.js"
 import L from "leaflet"
 
 const props = defineProps({
   mode: String,
-  imageUrl: String,
-  stations: Object,
-  junctions: Object,
-  routes: Object,
-  lines: Object,
-  currentRoute: Object,
-  hoveredRouteId: Number,
-  hideLines: Boolean,
-  showJunctions: Boolean
+  imageUrl: String
 })
 
 const emit = defineEmits([
-  "mapReady",
-  "mapRightClick",
-  "stationRightClick",
-  "routeRightClick"
+    "mapReady"
 ])
 
 const mapContainer = ref(null)
 let map = null
 let currentLayer = null
-let stationLayerGroup = null
-let junctionLayerGroup = null
-let routeLayerGroup = null
-let lineLayerGroup = null
 
 onMounted(() => {
   createMap()
@@ -56,73 +37,6 @@ watch(() => props.imageUrl, (newUrl) => {
   }
 })
 
-// watch for change in stations array and rerender stations on change
-watch(() => props.stations, () => {
-      renderStationsOnMap()
-    },
-    { deep: true }  // look inside the list
-)
-
-watch(() => props.junctions, () => {
-  renderJunctionsOnMap()
-  renderRoutesOnMap()
-  if (!props.hideLines) {
-    renderLinesOnMap()
-  }
-}, { deep: true })
-
-watch(() => props.showJunctions, (visible) => {
-  if (!junctionLayerGroup) {
-    return
-  }
-  if (visible) {
-    renderJunctionsOnMap()
-  } else {
-    junctionLayerGroup.clearLayers()
-  }
-})
-
-watch(
-    () => props.routes, () => {
-      renderRoutesOnMap()
-      if (!props.hideLines) {
-        renderLinesOnMap()
-      }
-    },
-    { deep: true }
-)
-
-watch(
-    () => props.lines, () => {
-      if (!props.hideLines) {
-        renderLinesOnMap()
-      }
-    },
-    { deep: true }
-)
-
-watch(() => props.hideLines, (hidden) => {
-  if (!lineLayerGroup) {
-    return
-  }
-  if (hidden) {
-    lineLayerGroup.clearLayers()
-  } else {
-    renderLinesOnMap()
-  }
-})
-
-watch(
-    () => props.currentRoute, () => {
-      renderRoutesOnMap()
-    },
-    { deep: true }
-)
-
-watch(() => props.hoveredRouteId, () => {
-  renderRoutesOnMap()
-})
-
 function createMap() {
   if (!mapContainer.value) return
 
@@ -140,42 +54,18 @@ function createMap() {
     })
   }
 
-  // Prevent default browser action on right click
-  map.getContainer().addEventListener("contextmenu", (e) => {
-    e.preventDefault()
-  })
-
-  // Emit right-click event's coordinates to CreatorMap
-  map.on("contextmenu", (e) => {
-    emit("mapRightClick", e.latlng)
-  })
-
-
-  stationLayerGroup = L.layerGroup().addTo(map)   // Layer for stations
-  junctionLayerGroup = L.layerGroup().addTo(map)
-  routeLayerGroup = L.layerGroup().addTo(map)
-  lineLayerGroup = L.layerGroup().addTo(map)
-  map.createPane("stationPane") // Pane to have stations always on top of lines and routes
-  map.getPane("stationPane").style.zIndex = 500
   if (props.mode === "image" && props.imageUrl) {
     loadImage(props.imageUrl)
   }
-  renderRoutesOnMap()
-  if (!props.hideLines) {
-    renderLinesOnMap()
-  }
-  renderStationsOnMap()
-  if (props.showJunctions) {
-    renderJunctionsOnMap()
-  }
-  emit("mapReady", map)     // Tell the CreatorMap that the map is ready
+
+  emit("mapReady", map)
 }
 
-// 🧹 Destroy map
 function destroyMap() {
   if (map) {
     map.remove()  // DOM cleanup
     map = null    // break the reference to the object and let garbage collector deal with it
+    currentLayer = null
   }
 }
 
@@ -217,48 +107,6 @@ function loadImage(imageUrl) {
   }
 
   img.src = imageUrl
-}
-
-// Render stations and labels
-function renderStationsOnMap() {
-  if (!map || !stationLayerGroup) return
-
-  renderStations(stationLayerGroup, props.stations, stationId => emit("stationRightClick", stationId))  // we also send a function that will be called after station placement with right click
-}
-
-function renderJunctionsOnMap() {
-  if (!map || !junctionLayerGroup || !props.showJunctions) return
-
-  renderJunctions(junctionLayerGroup, props.junctions, junctionId => emit("stationRightClick", junctionId))
-}
-
-// Render routes
-function renderRoutesOnMap() {
-  if (!map || !routeLayerGroup) return
-
-  renderRoutes(
-      routeLayerGroup,
-      props.routes,
-      props.currentRoute,
-      props.stations,
-      props.junctions,
-      (routeId, coordinates, ctrlPressed) => emit("routeRightClick", routeId, coordinates, ctrlPressed),
-      props.hoveredRouteId
-  )
-}
-
-// Render lines
-function renderLinesOnMap() {
-  if (!map || !lineLayerGroup || props.hideLines) return
-
-  renderLines(
-      lineLayerGroup,
-      props.lines,
-      props.routes,
-      props.stations,
-      props.junctions,
-      (routeId, coordinates, ctrlPressed) => emit("routeRightClick", routeId, coordinates, ctrlPressed)   // clicking is detected for route segments so that other lines and junctions can be added
-  )
 }
 </script>
 

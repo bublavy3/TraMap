@@ -51,7 +51,7 @@ function validSnapshot(snapshot) {
 }
 
 async function getProject(projectId, env) {
-  const request = `SELECT snapshot, image_key, name FROM projects WHERE id = '${projectId}'`
+  const request = `SELECT snapshot, image_key, name, countries FROM projects WHERE id = '${projectId}'`
   const project = await env.DB.prepare(request).first() // .first() is just standard D1 API getter
   if (!project) {
     return reportResult({ error: "Project not found" }, 404)
@@ -61,6 +61,7 @@ async function getProject(projectId, env) {
     id: projectId,
     ...JSON.parse(project.snapshot),
     name: project.name,
+    countries: project.countries ? JSON.parse(project.countries) : [],
     imageUrl: project.image_key
       ? `/api/projects/${projectId}/background`
       : null,
@@ -72,6 +73,12 @@ async function saveProject(content, projectId, env) {
   const name = form.get("name")
   if (!name) {
     return reportResult({ error: "Project name cannot be empty" }, 400)
+  }
+  let countries
+  try {
+    countries = JSON.parse(form.get("countries") || "[]")
+  } catch {
+    return reportResult({ error: "Project countries are not valid in JSON" }, 400)
   }
   const snapshotText = form.get("snapshot")
   let snapshot
@@ -118,14 +125,15 @@ async function saveProject(content, projectId, env) {
     }
   }
 
-  request = `INSERT INTO projects (id, snapshot, image_key, last_update, name)
-             VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?)
+  request = `INSERT INTO projects (id, snapshot, image_key, last_update, name, countries)
+             VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, ?)
              ON CONFLICT(id) DO UPDATE SET
              snapshot = excluded.snapshot,
              image_key = excluded.image_key,
              last_update = CURRENT_TIMESTAMP,
-             name = excluded.name`
-  await env.DB.prepare(request).bind(projectId, JSON.stringify(snapshot), imageKey, name).run() // bind allows imageKey to be passed as a string or null
+             name = excluded.name,
+             countries = excluded.countries`
+  await env.DB.prepare(request).bind(projectId, JSON.stringify(snapshot), imageKey, name, JSON.stringify(countries)).run()
 
   if (uploadedImageKey && existingProject?.image_key) {
     await env.BACKGROUNDS.delete(existingProject.image_key)
@@ -134,7 +142,8 @@ async function saveProject(content, projectId, env) {
   return reportResult({
     saved: true,
     id: projectId,
-    name,
+    name: name,
+    countries: countries,
     imageUrl: imageKey ? `/api/projects/${projectId}/background` : null
   })
 }
@@ -159,7 +168,11 @@ async function getBackground(projectId, env) {
 }
 
 async function searchProjects(search, env) {
-  const request = `SELECT id, name FROM projects WHERE name LIKE '%${search}%' ORDER BY name COLLATE NOCASE`  // COLLATE NOCASE ensures everything is compared as if in lowercase
-  const projects = await env.DB.prepare(request).all()
-  return reportResult({ projects: projects.results })
+  const request = `SELECT id, name, countries FROM projects WHERE name LIKE '%${search}%' ORDER BY name COLLATE NOCASE`  // COLLATE NOCASE ensures everything is compared as if in lowercase
+  const result = await env.DB.prepare(request).all()
+  const projects = result.results.map(project => ({
+    ...project,
+    countries: project.countries ? JSON.parse(project.countries) : []
+  }))
+  return reportResult({ projects })
 }

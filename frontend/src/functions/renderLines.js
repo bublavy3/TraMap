@@ -1,7 +1,7 @@
 import {renderMultiline} from "./renderMultiline.js";
 import { settings } from "../config/settings.js"
 
-export function renderLines(layerGroup, lines, routes, stations, junctions, onRouteRightClick) {
+export function renderLines(layerGroup, lines, routes, stations, junctions, onRouteRightClick = null) {
     layerGroup.clearLayers()
 
     const stationMap = { ...stations, ...junctions }

@@ -14,10 +14,12 @@ export function renderMultiline(layerGroup, routeId, points, lines, lineWidth, o
             lineCap: "round",
             lineJoin: "round"
         })
-        polyline.on("contextmenu", event => {
-                        L.DomEvent.stopPropagation(event)
-                        onRouteRightClick(routeId, event.latlng, event.originalEvent.ctrlKey)
-                    })
+        if (onRouteRightClick) {
+            polyline.on("contextmenu", event => {
+                L.DomEvent.stopPropagation(event)
+                onRouteRightClick(routeId, event.latlng, event.originalEvent.ctrlKey)
+            })
+        }
         polyline.addTo(layerGroup)
         edge += lineWidth;
     });

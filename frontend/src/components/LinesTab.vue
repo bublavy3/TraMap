@@ -1,8 +1,9 @@
 <script setup>
 import { ref, watch, onMounted } from "vue"
-import LinesRow from "./LinesRow.vue"
+import LinesRowCreator from "./LinesRowCreator.vue"
 import { TransportMode } from "../constants/transportModes.js"
 import { useI18n } from "vue-i18n"
+import LinesRowViewer from "./LinesRowViewer.vue";
 
 const { t } = useI18n()
 
@@ -10,7 +11,8 @@ const props = defineProps({
   lines: Object,
   routes: Object,
   stations: Object,
-  junctions: Object
+  junctions: Object,
+  editingAllowed: Boolean
 })
 
 const emit = defineEmits([
@@ -105,7 +107,7 @@ function handleDeleteLine(lineId) {
 <template>
   <div class="lines-tab">
     <div class="lines-main-controls">
-      <button type="button" class="lines-add-button" :title="t('lines.addLine')" @click="addLine">+</button>
+      <button v-if="editingAllowed" type="button" class="lines-add-button" :title="t('lines.addLine')" @click="addLine">+</button>
 
       <div class="lines-filtering-and-sorting">
         <input v-model="nameFilter" type="text" class="lines-filter-or-sort-field" :placeholder="t('common.filterByName')"/>
@@ -129,17 +131,27 @@ function handleDeleteLine(lineId) {
       </div>
     </div>
 
-    <div v-if="displayedLines.length" class="lines-list">
-      <LinesRow
-          v-for="line in displayedLines"
-          :key="line.id"
-          :line="line"
-          :routes="routes"
-          :stations="stations"
-          :junctions="junctions"
-          :focused="line.id === focusedLineId"
-          @lineDeleted="handleDeleteLine"
-          @lineFocused="handleLineFocused"
+    <div v-if="props.editingAllowed" class="lines-list">
+      <LinesRowCreator
+        v-for="line in displayedLines"
+        :key="line.id"
+        :line="line"
+        :routes="routes"
+        :stations="stations"
+        :junctions="junctions"
+        :focused="line.id === focusedLineId"
+        @lineDeleted="handleDeleteLine"
+        @lineFocused="handleLineFocused"
+      />
+    </div>
+    <div v-else class="lines-list">
+      <LinesRowViewer
+        v-for="line in displayedLines"
+        :key="line.id"
+        :line="line"
+        :routes="routes"
+        :stations="stations"
+        :junctions="junctions"
       />
     </div>
   </div>

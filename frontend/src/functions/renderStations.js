@@ -1,7 +1,7 @@
 import { renderStationDot } from "./renderStationDot"
 import { renderStationLabel } from "./renderStationLabel"
 
-export function renderStations(layerGroup, stations, onStationRightClick) {
+export function renderStations(layerGroup, stations, onStationRightClick = null) {
     layerGroup?.clearLayers()
 
     Object.values(stations ?? {}).forEach(station => {

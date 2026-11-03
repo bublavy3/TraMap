@@ -8,7 +8,7 @@ import About from "../pages/About.vue"
 
 const routes = [
     { path: "/", component: Home },
-    { path: "/viewer", component: Viewer },
+    { path: "/viewer/:id", component: Viewer },
     { path: "/creator", component: Creator },
     { path: "/login", component: Login },
     { path: "/about", component: About }

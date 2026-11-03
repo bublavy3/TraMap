@@ -2,7 +2,7 @@
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 import PanelTabs from "./PanelTabs.vue"
-import { CreatorPanelTab } from "../constants/creatorPanelTabs.js";
+import { PanelTab } from "../constants/panelTabs.js";
 
 const props = defineProps({
   mode: String,
@@ -78,11 +78,11 @@ function saveProject() {
 
 const currentText = computed(() => {    // this text will inform the user how to use the tool he has selected
   switch (props.activeTab) {
-    case CreatorPanelTab.STATIONS:
+    case PanelTab.STATIONS:
       return t("panel.infotextStationTab")
-    case CreatorPanelTab.LINES:
+    case PanelTab.LINES:
       return t("panel.infotextLinesTab")
-    case CreatorPanelTab.ROUTES:
+    case PanelTab.ROUTES:
       return t("panel.infotextRoutesTab")
     default:
       return ""
@@ -114,6 +114,7 @@ const currentText = computed(() => {    // this text will inform the user how to
       :junctions="junctions"
       :lines="lines"
       :routes="routes"
+      :editingAllowed="true"
       @tabChanged="changeActiveTab"
       @lineFocused="handleLineFocused"
       @lineDeleted="handleLineDeleted"

@@ -22,3 +22,9 @@
 .stations-list {
     overflow-y: auto;
 }
+
+.readonly-input {
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #aaaaaa;
+}

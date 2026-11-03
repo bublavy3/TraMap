@@ -38,3 +38,9 @@ input {
 .project-dialog-error {
     color: darkred;
 }
+
+select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 5px;
+}

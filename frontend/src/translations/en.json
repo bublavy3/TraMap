@@ -11,13 +11,14 @@
     "saveTitle": "Save project",
     "loadTitle": "Load project",
     "name": "Project name",
+    "countries": "Countries",
+    "countriesMultiselectHint": "Use CTRL to select multiple countries",
     "search": "Search by name",
     "searchButton": "Search",
     "searching": "Searching...",
     "savingPending": "Saving...",
     "save": "Save",
     "cancel": "Cancel",
-    "noProjects": "No projects found.",
     "searchFailed": "Could not search projects."
   },
   "common": {
@@ -28,7 +29,8 @@
     "minutesShort": "min",
     "secondsShort": "s",
     "error": "Error",
-    "close": "Close"
+    "close": "Close",
+    "openTimetable": "Open timetable"
   },
   "lines": {
     "addLine": "Add line",
@@ -37,11 +39,23 @@
     "sortByTransportMode": "Sort by transport mode",
     "lineName": "Line name",
     "lineColor": "Line color",
-    "openTimetable": "Open timetable",
     "deleteLine": "Delete line"
   },
   "mapList": {
     "selectMap": "Select map"
+  },
+  "home": {
+    "logo": "TraMap",
+    "continentNames": { "Europe": "Europe", "Asia": "Asia", "Africa": "Africa", "North America": "N. America", "South America": "S. America", "Oceania": "Oceania" },
+    "about": "About",
+    "login": "Login",
+    "searchPlaceholder": "Search network, city or country...",
+    "searching": "Loading projects...",
+    "searchFailed": "Could not load projects.",
+    "noResults": "No matching projects.",
+    "noCountries": "No projects yet",
+    "creatorSuggestionText": "Are you a transit agency? Do you want to create and publish / print your own public transport map?",
+    "createMap": "Create transit map"
   },
   "tabs": {
     "stations": "Stations",

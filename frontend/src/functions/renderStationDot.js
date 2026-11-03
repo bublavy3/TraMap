@@ -1,7 +1,7 @@
 import L from "leaflet"
 import { settings } from "../config/settings.js"
 
-export function renderStationDot(station, onRightClick) {
+export function renderStationDot(station, onRightClick = null) {
     const dot = L.circleMarker([station.lat, station.lng], {
         radius: settings.stationDot.radius,
         color: "black",
@@ -11,11 +11,12 @@ export function renderStationDot(station, onRightClick) {
         pane: "stationPane" // put stations in a pane that's always above lines and routes
     })
 
-    dot.on("contextmenu", (e) => {
-        // don't let the map receive this event too
-        L.DomEvent.stopPropagation(e)
-        onRightClick(station.id) // callback
-    })
-
+    if (onRightClick) {
+        dot.on("contextmenu", (e) => {
+            // don't let the map receive this event too
+            L.DomEvent.stopPropagation(e)
+            onRightClick(station.id) // callback
+        })
+    }
     return dot
 }

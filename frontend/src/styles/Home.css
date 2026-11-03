@@ -1,0 +1,91 @@
+.home-page {
+  /* I guess nothing here so far */
+}
+
+.home-content {
+  display: flex;
+  min-height: calc(100vh - 51px); /* viewport minus the menu bar's 50px height and 1px border */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-search-field {
+  width: min(100%, 500px);
+  margin-bottom: 50px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid #aaaaaa;
+  background: #ffffff;
+}
+
+.home-search-field input {
+  width: 100%;
+  padding: 10px 40px 10px 10px; /* 40 px so that the cancel button does not cover the search button*/
+  border: 0;
+  outline: none;  /* do not highlight when user types in */
+}
+
+.home-search-field > span {
+  position: absolute;
+  top: 0;
+  right: 10px;
+  font-size: 25px;
+}
+
+.home-search-results {
+  position: absolute;
+  z-index: 5; /* cover the creator button */
+  top: 100%;  /* shift down by the search bar height */
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #cccccc;
+}
+
+.home-search-results li {
+  border-bottom: 1px solid #eeeeee;
+}
+
+.home-search-results li:last-child {
+  border-bottom: 0;
+}
+
+.home-search-results li > button {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  padding: 10px;
+  border: 0;
+  background: #ffffff;
+  text-align: left;
+}
+
+.home-search-results li > button:hover {
+  background: #eeeeee;
+}
+
+.home-creator-suggestion {
+  width: min(100%, 500px);
+  text-align: center;
+}
+
+.home-creator-suggestion p {
+  margin: 0 auto 15px;  /* auto-set margin to center text */
+  max-width: 350px;
+}
+
+.create-map-button {
+  padding: 10px 20px;
+  border: 2px solid #aaaaaa;
+  font-weight: 500;
+  text-decoration: none;
+  color: #555555;
+}
+
+.create-map-button:hover {
+  border-color: #555555;
+}

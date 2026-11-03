@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue"
-import { CreatorPanelTab } from "../constants/creatorPanelTabs.js";
+import { PanelTab } from "../constants/panelTabs.js";
 import CreatorMap from "../components/CreatorMap.vue"
 import CreatorPanel from "../components/CreatorPanel.vue"
 import SaveProjectDialog from "../components/SaveProjectDialog.vue"
@@ -10,7 +10,7 @@ const mode = ref("osm")
 const imageUrl = ref(null)
 const backgroundImageFile = ref(null)
 const backgroundImageIsSaved = ref(false)
-const activeTab = ref(CreatorPanelTab.STATIONS)
+const activeTab = ref(PanelTab.STATIONS)
 const stations = ref({})
 const junctions = ref({})
 const lines = ref({})
@@ -22,6 +22,7 @@ const hideLines = ref(false)
 const showJunctions = ref(false)
 const projectId = ref(null)
 const projectName = ref("")
+const projectCountries = ref([])
 const saveDialogOpen = ref(false)
 const loadDialogOpen = ref(false)
 const savingPending = ref(false)
@@ -56,7 +57,7 @@ function closeDialog() {
   errorMessage.value = ""
 }
 
-async function saveProject(name) {
+async function saveProject({name, countries}) {
   name = name.trim()
   if (!name) {
     return
@@ -73,6 +74,7 @@ async function saveProject(name) {
   const form = new FormData()
   form.set("snapshot", JSON.stringify(snapshot))
   form.set("name", name)
+  form.set("countries", JSON.stringify(countries))
 
   if (mode.value === "image" && backgroundImageFile.value) {  // newly uploaded background image
     form.set("backgroundImage", backgroundImageFile.value)
@@ -100,6 +102,7 @@ async function saveProject(name) {
     backgroundImageIsSaved.value = result.imageUrl != null
     projectId.value = newProjectId
     projectName.value = name
+    projectCountries.value = countries
     saveDialogOpen.value = false
   } catch (error) {
     errorMessage.value = error.message
@@ -115,7 +118,7 @@ async function loadProject(newProjectId) {
     const response = await fetch(`/api/projects/${newProjectId}`)
     const result = await response.json()
     if (!response.ok) {
-      throw new Error(result.error || "Could not load the project")
+      throw new Error(result.error || "Something went wrong while loading the project")
     }
 
     if (imageUrl.value?.startsWith("blob:")) {
@@ -134,6 +137,7 @@ async function loadProject(newProjectId) {
     hoveredRouteId.value = null
     projectId.value = result.id
     projectName.value = result.name
+    projectCountries.value = result.countries
     loadDialogOpen.value = false
   } catch (error) {
     errorMessage.value = error.message
@@ -147,18 +151,18 @@ defineExpose({ saveProject, loadProject })
 function handleTabChange(tab) {
   activeTab.value = tab
   hoveredRouteId.value = null
-  hideLines.value = tab === CreatorPanelTab.ROUTES;
-  showJunctions.value = tab === CreatorPanelTab.ROUTES;
+  hideLines.value = tab === PanelTab.ROUTES;
+  showJunctions.value = tab === PanelTab.ROUTES;
 }
 
 function handleMapRightClick(coordinates) {
   switch (activeTab.value) {
-    case CreatorPanelTab.STATIONS:
+    case PanelTab.STATIONS:
       addStation(coordinates)
       break
-    case CreatorPanelTab.LINES:
+    case PanelTab.LINES:
       break
-    case CreatorPanelTab.ROUTES:
+    case PanelTab.ROUTES:
       if (currentRoute.value) { // add direction change point
         currentRoute.value.points.push({
           lat: coordinates.lat,
@@ -171,11 +175,11 @@ function handleMapRightClick(coordinates) {
 
 function handleStationRightClick(stationId) {
   switch (activeTab.value) {
-    case CreatorPanelTab.STATIONS:
+    case PanelTab.STATIONS:
       break
-    case CreatorPanelTab.LINES:
+    case PanelTab.LINES:
       break
-    case CreatorPanelTab.ROUTES:
+    case PanelTab.ROUTES:
       if (currentRoute.value) { // finish route at this station
         if (currentRoute.value.stationA === stationId) {  // if end station is the same as start station
           currentRoute.value = null
@@ -202,9 +206,9 @@ function handleStationRightClick(stationId) {
 
 function handleRouteRightClick(routeId, coordinates, ctrlPressed) {
   switch (activeTab.value) {
-    case CreatorPanelTab.STATIONS:
+    case PanelTab.STATIONS:
       break
-    case CreatorPanelTab.LINES:
+    case PanelTab.LINES:
       const currentLine = lines.value[currentLineId.value]
       const route = routes.value[routeId]
       if (currentLine && route) {
@@ -215,7 +219,7 @@ function handleRouteRightClick(routeId, coordinates, ctrlPressed) {
         }
       }
       break
-    case CreatorPanelTab.ROUTES:
+    case PanelTab.ROUTES:
       if (!currentRoute.value) {
         splitRoute(routeId, coordinates)
       }
@@ -379,6 +383,7 @@ function addStation(coordinates) {
     <SaveProjectDialog
         v-if="saveDialogOpen"
         :originalName="projectName"
+        :originalCountries="projectCountries"
         :savingPending="savingPending"
         :errorMessage="errorMessage"
         @save="saveProject"
