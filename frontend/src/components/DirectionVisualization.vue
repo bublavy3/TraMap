@@ -9,7 +9,7 @@ const props = defineProps({
 
 function getMinutes(timestamp) {
   const [hours, minutes] = timestamp.split(":");
-  return Number(hours) * 60 + Number(minutes) * 60;
+  return Number(hours) * 60 + Number(minutes);
 }
 
 const minutes = props.times.map(getMinutes)

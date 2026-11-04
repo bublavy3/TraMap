@@ -4,11 +4,11 @@ import { computeDirectionTimetable } from "../functions/computeDirectionTimetabl
 const props = defineProps({
   line: Object,
   directionName: String,
-  routes: Object,
-  stations: Object
+  stations: Object,
+  routes: Object
 })
 
-const directionTimetable = computeDirectionTimetable(props.line, props.directionName, props.routes, props.stations)
+const directionTimetable = computeDirectionTimetable(props.line, props.directionName, props.stations, props.routes)
 </script>
 
 <template>

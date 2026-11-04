@@ -12,7 +12,7 @@ export function findPathToStation(startStation, endStation, routesByStation) {
             if (visitedStations[nextStation]) {
                 continue
             }
-            const foundPath = searchFromStation(nextStation, [...path, route])
+            const foundPath = searchFromStation(nextStation, [...path, route.id])
             if (foundPath) {
                 return foundPath
             }

@@ -1,7 +1,6 @@
-import { findPathToStation } from "./findPathToStation.js";
+export function computeDirectionTimetable(line, directionName, stations, routes) {
 
-export function computeDirectionTimetable(line, directionName, routes, stations) {
-    function fillUnspecifiedTravelTimes(standardTimes, timesToProcess) {
+    function fillUnspecifiedTravelTimes(standardTimes, timesToProcess) {    // if high or low traffic times are not specified, use standard times
         for (let i = 0; i < standardTimes.length; i++) {
             if (timesToProcess[i] === 0) {
                 timesToProcess[i] = standardTimes[i];
@@ -88,16 +87,7 @@ export function computeDirectionTimetable(line, directionName, routes, stations)
     }
 
     const direction = line.directions[directionName]
-    let path = []
-    if (direction.passthroughStations) {
-        const guidingStations = [direction.startStation, ...direction.passthroughStations, direction.endStation]
-        for (let i = 0; i < guidingStations.length - 1; i++) {
-            path.push(...findPathToStation(guidingStations[i], guidingStations[i + 1], routes))
-        }
-        // TODO shortest path? ensure it doesn't go back if continuation possible
-    } else {
-        path = findPathToStation(direction.startStation, direction.endStation, routes)
-    }
+    const path = direction.routes.map(routeId => routes[routeId])
 
     const travelTimes = path.map(route => route.travelTime)
     let travelTimesHighTraffic = path.map(route => route.highTrafficTime)

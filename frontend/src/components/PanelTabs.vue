@@ -27,7 +27,7 @@ const emit = defineEmits([
 
 const tabs = props.editingAllowed ? [PanelTab.STATIONS, PanelTab.LINES, PanelTab.ROUTES]
                                   : [PanelTab.STATIONS, PanelTab.LINES]// these will be soon replaced with icons for each respective tab: stations, lines, timetables, fares, export... and somewhere tranfers and other functionality
-const activeTab = ref(PanelTab.STATIONS)  // starter tab - stations - right now really just trying out the tab system
+const activeTab = ref(PanelTab.STATIONS)  // starter tab - stations
 
 function selectTab(tab) {
   activeTab.value = tab

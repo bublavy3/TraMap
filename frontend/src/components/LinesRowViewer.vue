@@ -1,5 +1,4 @@
 <script setup>
-import { TransportMode } from "../constants/transportModes.js"
 import { ref } from "vue"
 import LineTimetableDialog from "./LineTimetableDialog.vue"
 import { useI18n } from "vue-i18n"

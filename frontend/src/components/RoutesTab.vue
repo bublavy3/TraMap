@@ -27,9 +27,8 @@ function routeMatchesStationFilter(route, inputtedText) {
 }
 
 function routeMatchesLineFilter(route, inputtedText){
-  const filteredLineIds = Object.fromEntries(Object.entries(props.lines).filter(([_, value]) => value.name.includes(inputtedText)));
-
-  return !inputtedText || route.lines.some(lineId => lineId in filteredLineIds)
+  const filteredLines = Object.values(props.lines).filter(line => line.name.includes(inputtedText))
+  return !inputtedText || filteredLines.some(line => line.routes.includes(route.id))
 }
 
 function refreshDisplayedRoutes() {

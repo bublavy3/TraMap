@@ -82,7 +82,8 @@ async function addLine() {
     name: "New line",
     color: "#101010",
     transportMode: TransportMode.BUS,
-    directions: {},
+    routes: [], // just ids
+    directions: {}, // directions are unique for each line, so they live directly inside lines
     trafficLevels: new Array(48).fill(1)
   }
 
@@ -91,10 +92,7 @@ async function addLine() {
 }
 
 function handleDeleteLine(lineId) {
-  if (props.lines[lineId]) {
-    delete props.lines[lineId]
-    emit("lineDeleted", lineId)
-  }
+  emit("lineDeleted", lineId)
 
   if (focusedLineId.value === lineId) {
     focusedLineId.value = null

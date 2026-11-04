@@ -187,7 +187,6 @@ function handleStationRightClick(stationId) {
         }
         currentRoute.value.stationB = stationId
         currentRoute.value.id = Date.now()
-        currentRoute.value.lines = []
         currentRoute.value.travelTime = 0
         currentRoute.value.highTrafficTime = 0
         currentRoute.value.lowTrafficTime = 0
@@ -213,9 +212,9 @@ function handleRouteRightClick(routeId, coordinates, ctrlPressed) {
       const route = routes.value[routeId]
       if (currentLine && route) {
         if (ctrlPressed) {
-          route.lines = route.lines.filter(lineId => lineId !== currentLineId.value)
-        } else if (!route.lines.includes(currentLineId.value)) {
-          route.lines.push(currentLineId.value)
+          currentLine.routes.filter(id => id !== routeId)
+        } else if (!currentLine.routes.includes(routeId)) {
+          currentLine.routes.push(routeId)
         }
       }
       break
@@ -263,7 +262,6 @@ function splitRoute(routeId, coordinates) {
         stationA: route.stationA,
         stationB: junction.id,
         points: firstSubRoutePoints,
-        lines: [...route.lines],
         travelTime: 0,
         highTrafficTime: 0,
         lowTrafficTime: 0
@@ -273,7 +271,6 @@ function splitRoute(routeId, coordinates) {
         stationA: junction.id,
         stationB: route.stationB,
         points: secondSubRoutePoints,
-        lines: [...route.lines],
         travelTime: 0,
         highTrafficTime: 0,
         lowTrafficTime: 0
@@ -282,6 +279,12 @@ function splitRoute(routeId, coordinates) {
       delete routes.value[routeId]
       routes.value[firstSubRoute.id] = firstSubRoute
       routes.value[secondSubRoute.id] = secondSubRoute
+      Object.values(lines.value).forEach(line => {
+        line.routes = line.routes.flatMap(id => id === routeId ? [firstSubRoute.id, secondSubRoute.id] : id)
+        Object.values(line.directions).forEach(direction => {
+          direction.routes = direction.routes.flatMap(id => id === routeId ? [firstSubRoute.id, secondSubRoute.id] : id)
+        })
+      })
       return
     }
   }
@@ -305,11 +308,7 @@ function handleLineDeleted(lineId) {
     currentLineId.value = null
   }
 
-  Object.values(routes.value).forEach(route => {
-    if (route.lines) {
-      route.lines = route.lines.filter(id => id !== lineId)
-    }
-  })
+  delete lines.value[lineId];
 }
 
 function handleRouteHovered(routeId) {
@@ -328,6 +327,13 @@ function handleRouteDeleted(routeId) {
     )) {
       delete junctions.value[stationId]
     }
+  })
+
+  Object.values(lines.value).forEach(line => {
+      line.routes = line.routes.filter(id => id !== routeId)
+      Object.values(line.directions).forEach(direction => {
+        direction.routes = direction.routes.filter(id => id !== routeId)
+      })
   })
 }
 

@@ -7,11 +7,10 @@ export function renderLines(layerGroup, lines, routes, stations, junctions, onRo
     const stationMap = { ...stations, ...junctions }
 
     Object.values(routes).forEach(route => {
-        if (!route.lines) {
+        const linesOnRoute = Object.values(lines).filter(line => line.routes.includes(route.id))
+        if (linesOnRoute.length === 0) {
             return
         }
-        const linesOnRoute = route.lines
-            .map(id => lines[id])
 
         // TODO duplicate
         const points = []

@@ -1,6 +1,5 @@
 <script setup>
 import { useI18n } from "vue-i18n";
-import {prepareRoutesByStation} from "../functions/prepareRoutesByStation.js";
 import {computeDirectionTimetable} from "../functions/computeDirectionTimetable.js";
 import DirectionVisualization from "./DirectionVisualization.vue";
 
@@ -24,41 +23,28 @@ function closePopup() {
 
 function getMinutes(timestamp) {
   const [hours, minutes] = timestamp.split(":");
-  return Number(hours) * 60 + Number(minutes) * 60;
+  return Number(hours) * 60 + Number(minutes);
 }
 
-function nextArriving(time) {
+function nextArriving(time) { // return whether the departure time is the closest one upcoming
   const totalMinutes = getMinutes(time)
   const now = new Date();
   const currentTotalMinutes = now.getHours() * 60 + now.getMinutes();
   return totalMinutes > currentTotalMinutes;
 }
 
-const routesFromStation = Object.fromEntries(Object.entries(props.routes).filter(
-    ([_, route]) => route.stationA === props.openedStationId || route.stationB === props.openedStationId
-))
-const linesFromStation = [...new Set(Object.values(routesFromStation).flatMap(route => route.lines))] // each line id shall be in the list only once
-
-const routesOnLinesFromStation = {} // keyed by station / junction
-linesFromStation.forEach(lineId => {
-  const routesOnLine = Object.fromEntries(Object.entries(props.routes).filter(
-      ([_, route]) => route.lines && route.lines.includes(lineId)
-  ))
-  routesOnLinesFromStation[lineId] = prepareRoutesByStation(routesOnLine)  // also by junction
-})
-
-const stationsOnLines = {}
-linesFromStation.forEach(lineId => {
-  stationsOnLines[lineId] = Object.fromEntries(Object.entries(props.stations).filter(([id]) => id in routesOnLinesFromStation[lineId])) // no junctions here anymore
-})
+const routesFromStation = Object.keys(props.routes).filter(key => {
+  const route = props.routes[key];
+  return route.stationA === props.openedStationId || route.stationB === props.openedStationId;
+}).map(Number)
+const linesFromStation = Object.values(props.lines).filter(line => line.routes.some(route => routesFromStation.includes(route)))
 
 const directionsTimetables = {}
-const linesFiltered = Object.fromEntries(Object.entries(props.lines).filter(([id]) => linesFromStation.includes(Number(id))))
 let maxDuration = 0
 let minDuration = 1000000 // we really don't expect trips longer than 694 days so this is fine
-for (const line of Object.values(linesFiltered)) {
+for (const line of linesFromStation) {
   for (const direction in line.directions) {  // in iterates through keys which are direction names
-    const directionTimetable = computeDirectionTimetable(line, direction, routesOnLinesFromStation[line.id], stationsOnLines[line.id])
+    const directionTimetable = computeDirectionTimetable(line, direction, props.stations, props.routes)
     const positionOnLine = directionTimetable.stations.indexOf(props.openedStationId)
     directionTimetable.stations = directionTimetable.stations.slice(positionOnLine)
     directionTimetable.stations = directionTimetable.stations.map(id => props.stations[id].name)  // name array instead of id array
@@ -76,9 +62,6 @@ for (const line of Object.values(linesFiltered)) {
     directionsTimetables[`${line.name} : ${direction}`] = directionTimetable
   }
 }
-
-console.log(maxDuration)
-console.log(minDuration)
 </script>
 
 <template>

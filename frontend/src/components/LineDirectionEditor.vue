@@ -2,6 +2,8 @@
 import TrafficTimeBar from "./TrafficTimeBar.vue";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n"
+import { getDirectionRoutesPath } from "../functions/getDirectionRoutesPath.js";
+import {prepareRoutesByStation} from "../functions/prepareRoutesByStation.js";
 
 const { t } = useI18n()
 
@@ -19,9 +21,19 @@ const startTime = ref("")
 const endTime = ref("")
 const interval = ref(intervals[0])
 
+const routesOnLine = props.line.routes.map(routeId => props.routes[routeId])
+const routesByStation = prepareRoutesByStation(routesOnLine)
+
+const stationsOnLine = [...new Set(
+    props.line.routes.flatMap(routeId => {
+      const route = props.routes[routeId];
+      return [route.stationA, route.stationB];
+    })
+)].filter(stationId => stationId in props.stations);
+
 function addSequence() {
   if (!startStation.value || !endStation.value || !startTime.value || !endTime.value) {
-    return  // TODO disable button
+    return  // TODO disable button instead
   }
   const start = props.stations[startStation.value]
   const end = props.stations[endStation.value]
@@ -44,7 +56,8 @@ function addSequence() {
       startStation: startStation.value,
       endStation: endStation.value,
       passthroughStations: passthroughExists ? passthroughStations.value : null,
-      sequences: [newSequence]
+      sequences: [newSequence],
+      routes: getDirectionRoutesPath(routesByStation, startStation.value, endStation.value, passthroughExists ? passthroughStations.value : null)
     }
   }
 }
@@ -68,18 +81,18 @@ function deleteSequence(directionName, sequenceId) {
       <label>{{ t('timetable.startStation') }}
         <select v-model="startStation">
           <option disabled value="">{{ t('timetable.selectStation') }}</option>
-          <option v-for="station in stations" :key="station.id" :value="station.id">{{ station.name }}</option>
+          <option v-for="stationId in stationsOnLine" :key="stationId" :value="stationId">{{ props.stations[stationId].name }}</option>
         </select>
       </label>
       <label>{{ t('timetable.passThrough') }}
         <select v-model="passthroughStations" multiple size="1">
-          <option v-for="station in stations" :key="station.id" :value="station.id">{{ station.name }}</option>
+          <option v-for="stationId in stationsOnLine" :key="stationId" :value="stationId">{{ props.stations[stationId].name }}</option>
         </select>
       </label>
       <label>{{ t('timetable.finalStation') }}
         <select v-model="endStation">
           <option disabled value="">{{ t('timetable.selectStation') }}</option>
-          <option v-for="station in stations" :key="station.id" :value="station.id">{{ station.name }}</option>
+          <option v-for="stationId in stationsOnLine" :key="stationId" :value="stationId">{{ props.stations[stationId].name }}</option>
         </select>
       </label>
     </div>

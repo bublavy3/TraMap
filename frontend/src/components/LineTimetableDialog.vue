@@ -2,7 +2,6 @@
 import { ref } from "vue"
 import LineDirectionEditor from "./LineDirectionEditor.vue"
 import LineDirectionView from "./LineDirectionView.vue"
-import {prepareRoutesByStation} from "../functions/prepareRoutesByStation.js";
 import { useI18n } from "vue-i18n"
 
 const { t } = useI18n()
@@ -26,12 +25,6 @@ const direction = ref(directionKeys.length > 0 ? directionKeys[0] : NEW_DIRECTIO
 function closePopup() {
   emit("close", null)
 }
-
-const routesOnLine = Object.fromEntries(Object.entries(props.routes).filter(
-    ([_, route]) => route.lines && route.lines.includes(props.line.id)
-))
-const routesByStation = prepareRoutesByStation(routesOnLine)  // also by junction
-const stationsOnLine = Object.fromEntries(Object.entries(props.stations).filter(([id]) => id in routesByStation)) // no junctions here anymore
 </script>
 
 <template>
@@ -54,7 +47,7 @@ const stationsOnLine = Object.fromEntries(Object.entries(props.stations).filter(
           class="timetable-direction-content"
           :line="line"
           :routes="routes"
-          :stations="stationsOnLine"
+          :stations="stations"
       />
       <LineDirectionView
           v-else
@@ -62,8 +55,8 @@ const stationsOnLine = Object.fromEntries(Object.entries(props.stations).filter(
           class="timetable-direction-content"
           :line="line"
           :directionName="direction"
-          :routes="routesByStation"
-          :stations="stationsOnLine"
+          :stations="stations"
+          :routes="routes"
       />
     </div>
   </div>
