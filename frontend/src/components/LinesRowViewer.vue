@@ -23,7 +23,7 @@ function closeTimetablePopup() {
 }
 
 function capitalize(modeName) {
-  return modeName.charAt(0).toUpperCase() + modeName.slice(1);
+  return modeName.charAt(0).toUpperCase() + modeName.slice(1)
 }
 </script>
 

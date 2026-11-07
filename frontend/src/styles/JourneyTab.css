@@ -1,0 +1,48 @@
+.journey-tab {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.station-search {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9rem;
+}
+
+.station-search input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #aaaaaa;
+}
+
+.station-search input:focus {
+    border: 2px solid #aaaaaa;
+}
+
+.suggestions {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+    border: 1px solid #aaaaaa;
+    z-index: 100;
+}
+
+.suggestions button {
+    width: 100%;
+    padding: 10px;
+    text-align: left;
+    background: white;
+    border: 0;
+    border-top: 1px solid #aaaaaa;
+}
+
+.suggestions button:hover {
+    background: #eeeeee;
+}

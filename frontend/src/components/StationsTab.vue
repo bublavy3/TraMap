@@ -41,7 +41,7 @@ watch([nameFilter, () => props.stations], () => {
 }, { deep: true })
 
 function handleDeleteClick(stationId) {
-  emit("stationDeleted", stationId);
+  emit("stationDeleted", stationId)
 }
 
 function openTimetablePopup(stationId) {

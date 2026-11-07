@@ -7,22 +7,22 @@ const props = defineProps({
   minDuration: Number
 })
 
-function getMinutes(timestamp) {
-  const [hours, minutes] = timestamp.split(":");
-  return Number(hours) * 60 + Number(minutes);
+function minutesToTimestamp(minutes) {
+  const hours = Math.floor(minutes / 60)
+  const remainingMinutes = minutes % 60
+  return `${String(hours).padStart(2, '0')}:${String(remainingMinutes).padStart(2, '0')}`
 }
 
-const minutes = props.times.map(getMinutes)
-const departure = minutes[0]
-const totalDuration = minutes[minutes.length - 1] - departure
+const departure = props.times[0]
+const totalDuration = props.times[props.times.length - 1] - departure
 const minimumWidth = Math.max(props.minDuration / props.maxDuration * 100, 25)
 const width = minimumWidth + (totalDuration - props.minDuration) / (props.maxDuration - props.minDuration) * (100 - minimumWidth) // 25% is minimum width, rest is scaled between shortest and longest line
 
 function getStops() {
   return props.stationNames.map((name, i) => ({
     name,
-    time: props.times[i],
-    position: totalDuration > 0 ? ((minutes[i] - departure) / totalDuration) * 100 : 0  // proportional percentage of full duration traveled
+    time: minutesToTimestamp(props.times[i]),
+    position: totalDuration > 0 ? ((props.times[i] - departure) / totalDuration) * 100 : 0  // proportional percentage of full duration traveled
   }))
 }
 

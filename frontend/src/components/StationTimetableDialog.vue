@@ -21,21 +21,15 @@ function closePopup() {
   emit("close", null)
 }
 
-function getMinutes(timestamp) {
-  const [hours, minutes] = timestamp.split(":");
-  return Number(hours) * 60 + Number(minutes);
-}
-
 function nextArriving(time) { // return whether the departure time is the closest one upcoming
-  const totalMinutes = getMinutes(time)
-  const now = new Date();
-  const currentTotalMinutes = now.getHours() * 60 + now.getMinutes();
-  return totalMinutes > currentTotalMinutes;
+  const now = new Date()
+  const currentMinutes = now.getHours() * 60 + now.getMinutes()
+  return time > currentMinutes
 }
 
 const routesFromStation = Object.keys(props.routes).filter(key => {
-  const route = props.routes[key];
-  return route.stationA === props.openedStationId || route.stationB === props.openedStationId;
+  const route = props.routes[key]
+  return route.stationA === props.openedStationId || route.stationB === props.openedStationId
 }).map(Number)
 const linesFromStation = Object.values(props.lines).filter(line => line.routes.some(route => routesFromStation.includes(route)))
 
@@ -48,11 +42,11 @@ for (const line of linesFromStation) {
     const positionOnLine = directionTimetable.stations.indexOf(props.openedStationId)
     directionTimetable.stations = directionTimetable.stations.slice(positionOnLine)
     directionTimetable.stations = directionTimetable.stations.map(id => props.stations[id].name)  // name array instead of id array
-    directionTimetable.timetable = Object.entries(directionTimetable.timetable).map(([key, value]) => [key, ...value].slice(positionOnLine)) // change format to array of arrays starting with the departure time
-    directionTimetable.timetable = directionTimetable.timetable.find(trip => nextArriving(trip[0]));  // keep only the array with times for next arriving vehicle
+    directionTimetable.timetable = directionTimetable.timetable.map(trip => trip.slice(positionOnLine))
+    directionTimetable.timetable = directionTimetable.timetable.find(trip => nextArriving(trip[0]))  // keep only the array with times for next arriving vehicle
     directionTimetable["lineColor"] = line.color
     directionTimetable["lineName"] = line.name
-    const tripDuration = getMinutes(directionTimetable.timetable[directionTimetable.timetable.length - 1]) - getMinutes(directionTimetable.timetable[0])
+    const tripDuration = directionTimetable.timetable[directionTimetable.timetable.length - 1] - directionTimetable.timetable[0]
     if (tripDuration > maxDuration) {
       maxDuration = tripDuration
     }

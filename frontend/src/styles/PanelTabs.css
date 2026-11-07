@@ -39,6 +39,10 @@
     z-index: 1; /* cover the bottom border of the inactive tabs */
 }
 
+.tab-content.journey-content {
+    overflow: visible;
+}
+
 .tab-content-inside {
     display: flex;
     flex: 1;

@@ -26,10 +26,10 @@ const routesByStation = prepareRoutesByStation(routesOnLine)
 
 const stationsOnLine = [...new Set(
     props.line.routes.flatMap(routeId => {
-      const route = props.routes[routeId];
-      return [route.stationA, route.stationB];
+      const route = props.routes[routeId]
+      return [route.stationA, route.stationB]
     })
-)].filter(stationId => stationId in props.stations);
+)].filter(stationId => stationId in props.stations)
 
 function addSequence() {
   if (!startStation.value || !endStation.value || !startTime.value || !endTime.value) {

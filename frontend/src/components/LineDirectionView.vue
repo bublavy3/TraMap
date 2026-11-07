@@ -8,6 +8,12 @@ const props = defineProps({
   routes: Object
 })
 
+function minutesToTimestamp(minutes) {
+  const hours = Math.floor(minutes / 60)
+  const remainingMinutes = minutes % 60
+  return `${String(hours).padStart(2, '0')}:${String(remainingMinutes).padStart(2, '0')}`
+}
+
 const directionTimetable = computeDirectionTimetable(props.line, props.directionName, props.stations, props.routes)
 </script>
 
@@ -22,10 +28,10 @@ const directionTimetable = computeDirectionTimetable(props.line, props.direction
         </tr>
       </thead>
       <tbody>
-        <tr v-for="([departureTime, stationTimes]) in Object.entries(directionTimetable.timetable)" :key="departureTime">
-          <td>{{ departureTime }}</td>
+        <tr v-for="([departureTime, ...stationTimes]) in directionTimetable.timetable" :key="departureTime">
+          <td>{{ minutesToTimestamp(departureTime) }}</td>
           <td v-for="(stationTime, index) in stationTimes" :key="`${departureTime}-${index}`">
-            {{ stationTime }}
+            {{ minutesToTimestamp(stationTime) }}
           </td>
         </tr>
       </tbody>

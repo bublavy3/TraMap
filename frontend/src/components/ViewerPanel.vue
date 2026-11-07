@@ -13,7 +13,7 @@ const props = defineProps({
 
 const { t } = useI18n()
 
-const activeTab = ref(PanelTab.STATIONS)
+const activeTab = ref(PanelTab.JOURNEY)
 
 function changeActiveTab(tab) {
   activeTab.value = tab
@@ -34,7 +34,7 @@ const currentText = computed(() => {    // TODO use viewer specific info texts
 </script>
 
 <template>
-  <div class="panel">
+  <div class="panel" :class="{ 'journey-panel': activeTab === PanelTab.JOURNEY }">
     <h2>{{ t('panel.title') }}</h2>
     <div class="info-text">{{ currentText }}</div>
 

@@ -15,7 +15,7 @@ const tuggingMode = ref(false)
 const newLevel = ref(1)
 
 function limitLevel(level) {
-  return Math.min(Math.max(level, 0), 2);
+  return Math.min(Math.max(level, 0), 2)
 }
 
 function setLevel(index, level) {

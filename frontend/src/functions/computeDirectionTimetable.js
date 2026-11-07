@@ -3,43 +3,43 @@ export function computeDirectionTimetable(line, directionName, stations, routes)
     function fillUnspecifiedTravelTimes(standardTimes, timesToProcess) {    // if high or low traffic times are not specified, use standard times
         for (let i = 0; i < standardTimes.length; i++) {
             if (timesToProcess[i] === 0) {
-                timesToProcess[i] = standardTimes[i];
+                timesToProcess[i] = standardTimes[i]
             }
         }
-        return timesToProcess;
+        return timesToProcess
     }
 
     function orderStations(routes, startStation) {
-        const stationsOrdered = [startStation];
-        let current = startStation;
+        const stationsOrdered = [startStation]
+        let current = startStation
         for (const route of routes) {
-            current = route.stationA === current ? route.stationB : route.stationA;
-            stationsOrdered.push(current);
+            current = route.stationA === current ? route.stationB : route.stationA
+            stationsOrdered.push(current)
         }
-        return stationsOrdered;
+        return stationsOrdered
     }
 
     function removeJunctions(nodes, travelTimes, timesHighTraffic, timesLowTraffic) {
-        const filteredStations = [nodes[0]];
-        const filteredTimes = [];
-        const filteredHighTimes = [];
-        const filteredLowTimes = [];
-        let accumulatedTime = 0;
-        let accumulatedHighTime = 0;
-        let accumulatedLowTime = 0;
+        const filteredStations = [nodes[0]]
+        const filteredTimes = []
+        const filteredHighTimes = []
+        const filteredLowTimes = []
+        let accumulatedTime = 0
+        let accumulatedHighTime = 0
+        let accumulatedLowTime = 0
 
         for (let i = 1; i < nodes.length; i++) {
-            accumulatedTime += travelTimes[i - 1];
-            accumulatedHighTime += timesHighTraffic[i - 1];
-            accumulatedLowTime += timesLowTraffic[i - 1];
+            accumulatedTime += travelTimes[i - 1]
+            accumulatedHighTime += timesHighTraffic[i - 1]
+            accumulatedLowTime += timesLowTraffic[i - 1]
             if (nodes[i] in stations) { // not a junction
-                filteredStations.push(nodes[i]);
-                filteredTimes.push(accumulatedTime);
-                filteredHighTimes.push(accumulatedHighTime);
-                filteredLowTimes.push(accumulatedLowTime);
-                accumulatedTime = 0;
-                accumulatedHighTime = 0;
-                accumulatedLowTime = 0;
+                filteredStations.push(nodes[i])
+                filteredTimes.push(accumulatedTime)
+                filteredHighTimes.push(accumulatedHighTime)
+                filteredLowTimes.push(accumulatedLowTime)
+                accumulatedTime = 0
+                accumulatedHighTime = 0
+                accumulatedLowTime = 0
             }
         }
         return {
@@ -47,19 +47,16 @@ export function computeDirectionTimetable(line, directionName, stations, routes)
             travelTimes: filteredTimes,
             timesHighTraffic: filteredHighTimes,
             timesLowTraffic: filteredLowTimes
-        };
+        }
     }
 
     function timestampToSeconds(timestamp) {
-        const [hours, minutes] = timestamp.split(":");
-        return (Number(hours) * 3600) + (Number(minutes) * 60);
+        const [hours, minutes] = timestamp.split(":")
+        return (Number(hours) * 3600) + (Number(minutes) * 60)
     }
 
-    function secondsToTimestamp(seconds) {
-        const totalMinutes = Math.ceil(seconds / 60);
-        const hours = Math.floor(totalMinutes / 60);
-        const minutes = totalMinutes % 60;
-        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    function secondsToMinutes(seconds) {
+        return Math.ceil(seconds / 60)
     }
 
     function getHalfHourBlock(seconds) {
@@ -68,22 +65,22 @@ export function computeDirectionTimetable(line, directionName, stations, routes)
 
     function getAllStationTimes(departure, standardTimes, highTimes, lowTimes, traffic) {
         let nextArrivalTime = departure
-        let arrivalTimes = []
+        let arrivalTimes = [secondsToMinutes(departure)]
         for (let i = 0; i < standardTimes.length; i++) {
             switch (traffic[getHalfHourBlock(nextArrivalTime)]) {
                 case 0:
                     nextArrivalTime += lowTimes[i]
-                    break;
+                    break
                 case 1:
                     nextArrivalTime += standardTimes[i]
-                    break;
+                    break
                 case 2:
                     nextArrivalTime += highTimes[i]
-                    break;
+                    break
             }
-            arrivalTimes.push(secondsToTimestamp(nextArrivalTime));
+            arrivalTimes.push(secondsToMinutes(nextArrivalTime))
         }
-        return arrivalTimes;
+        return arrivalTimes
     }
 
     const direction = line.directions[directionName]
@@ -98,25 +95,23 @@ export function computeDirectionTimetable(line, directionName, stations, routes)
     const stationsOrdered = orderStations(path, direction.startStation)
     const timetableData = removeJunctions(stationsOrdered, travelTimes, travelTimesHighTraffic, travelTimesLowTraffic)
 
-    const timetableEntries = {}
+    const timetable = []
     for (const sequence of direction.sequences) {
         const startTime = timestampToSeconds(sequence.startTime)
         const endTime = timestampToSeconds(sequence.endTime)
         const interval = sequence.interval * 60
 
         for (let departureTime = startTime; departureTime <= endTime; departureTime += interval) {
-            timetableEntries[secondsToTimestamp(departureTime)] = getAllStationTimes(
+            timetable.push(getAllStationTimes(
                 departureTime,
                 timetableData.travelTimes,
                 timetableData.timesHighTraffic,
                 timetableData.timesLowTraffic,
                 line.trafficLevels
-            )
+            ))
         }
     }
-    const timetable = Object.fromEntries(
-        Object.entries(timetableEntries).sort((first, second) => first[0].localeCompare(second[0]))
-    )
+    timetable.sort((trip1, trip2) => trip1[0] - trip2[0])
 
     return {
         stations: timetableData.filteredStations,

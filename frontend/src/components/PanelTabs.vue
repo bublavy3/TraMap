@@ -5,6 +5,7 @@ import StationsTab from "./StationsTab.vue";
 import LinesTab from "./LinesTab.vue";
 import RoutesTab from "./RoutesTab.vue";
 import { useI18n } from "vue-i18n"
+import JourneyTab from "./JourneyTab.vue";
 
 const { t } = useI18n()
 
@@ -26,8 +27,8 @@ const emit = defineEmits([
 ])
 
 const tabs = props.editingAllowed ? [PanelTab.STATIONS, PanelTab.LINES, PanelTab.ROUTES]
-                                  : [PanelTab.STATIONS, PanelTab.LINES]// these will be soon replaced with icons for each respective tab: stations, lines, timetables, fares, export... and somewhere tranfers and other functionality
-const activeTab = ref(PanelTab.STATIONS)  // starter tab - stations
+                                  : [PanelTab.JOURNEY, PanelTab.STATIONS, PanelTab.LINES] // these will be soon replaced with icons for each respective tab: stations, lines, timetables, fares, export... and somewhere tranfers and other functionality
+const activeTab = ref(props.editingAllowed ? PanelTab.STATIONS : PanelTab.JOURNEY)
 
 function selectTab(tab) {
   activeTab.value = tab
@@ -63,7 +64,8 @@ function handleRouteDeleted(lineId) {
       </div>
     </div>
 
-    <div class="tab-content">
+    <div class="tab-content" :class="{ 'journey-content': activeTab === PanelTab.JOURNEY }">
+      <div v-if="activeTab === PanelTab.JOURNEY" class="tab-content-inside"><JourneyTab :stations="stations" :lines="lines" :routes="routes"/></div>
       <div v-if="activeTab === PanelTab.STATIONS" class="tab-content-inside"><StationsTab :stations="stations" :lines="lines" :routes="routes" :junctions="junctions" :editingAllowed="editingAllowed" @stationDeleted="handleStationDeleted"/></div>
       <div v-if="activeTab === PanelTab.LINES" class="tab-content-inside"><LinesTab :lines="lines" :routes="routes" :stations="stations" :junctions="junctions" :editingAllowed="editingAllowed" @lineFocused="handleLineFocused" @lineDeleted="handleLineDeleted"/></div>
       <div v-if="activeTab === PanelTab.ROUTES" class="tab-content-inside"><RoutesTab :routes="routes" :stations="{ ...stations, ...junctions }" :lines="lines" @routeDeleted="handleRouteDeleted" @hover="handleRouteHovered" /></div>

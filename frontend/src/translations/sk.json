@@ -58,7 +58,8 @@
   "tabs": {
     "stations": "Stanice",
     "lines": "Linky",
-    "routes": "Trasy"
+    "routes": "Trasy",
+    "journey": "Navigácia"
   },
   "routes": {
     "filterByStation": "Filter - stanica",
