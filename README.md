@@ -15,25 +15,14 @@ Here you will find:
 
 ## State of development
 
-This project is in ***early stage*** of development!
-First iterations of concepts of map and tab utilization, stations, lines, routes, route junctions, timetables and traffic levels are now implemented, but are not polished and will keep receiving updates.
+This project is in development!
 Bugs and missing features are to be expected with this version of the prototype!
 
 ## Running the project
 
-### Preconditions
-If you are running the project for the first time:
-1. clone this repo
-2. run: `npm install` in both backend and frontend directory
+As of now, the project is undergoing transition to Cloudflare backend and database, link to website prototype and instructions for local deployment will be added soon.
 
-### Backend
-1. in `backend` directory run: `node server.js`
-
-### Frontend
-1. in `frontend` directory run: `npm run dev`
-2. proceed to the provided URL
-
-### Calendar of implementation
+### Calendar of implementation (to be updated soon)
 | Start date | Issue                                                                        | State       |
 |:-----------|:-----------------------------------------------------------------------------|:------------|
 | 15.2. 2026 | Libraries and frameworks selection                                           | In progress |
