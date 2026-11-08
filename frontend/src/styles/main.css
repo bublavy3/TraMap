@@ -12,3 +12,25 @@
             -1px  1px 0 white,
             1px  1px 0 white;
 }
+
+.line-badge {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: row;
+    border: 1px solid black;
+    font-size: 10px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    white-space: nowrap;      /* Leaflet icon wrapper has zero width, so prevent wrapping */
+    pointer-events: none;     /* let through right-clicks on the lines underneath */
+}
+
+.line-badge-column {
+    flex-direction: column;
+}
+
+.line-badge-cell {
+    padding: 0 1px;
+}
