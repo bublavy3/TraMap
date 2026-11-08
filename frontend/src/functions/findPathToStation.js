@@ -17,6 +17,7 @@ export function findPathToStation(startStation, endStation, routesByStation) {
                 return foundPath
             }
         }
+        console.log("NO PATH FOUND !!!")    // TODO proper warning of disjoint route and direction deletion
         return null
     }
 

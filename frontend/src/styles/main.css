@@ -3,6 +3,8 @@
     color: black !important;
     font-size: 14px;
     font-weight: bold;
+    min-width: 5rem;
+    text-align: left;
 
     text-shadow:
             -1px -1px 0 white,

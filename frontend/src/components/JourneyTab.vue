@@ -53,10 +53,10 @@ function findJourney() {
   const now = new Date()
   const currentMinutes = now.getHours() * 60 + now.getMinutes()
   const tripsPath = findQuickestJourney(startStation.value.id, endStation.value.id, currentMinutes, props.lines, props.routes, props.stations)
+  tripList.length = 0 // empty the previous trip sequence first
   for (const trip of tripsPath) {
     const tripData = trip.trip.split("|")
     const line = props.lines[tripData[0]]
-    tripList.length = 0 // empty the previous trip sequence first
     tripList.push({
       startStationName: props.stations[trip.from].name,
       endStationName: props.stations[trip.to].name,
