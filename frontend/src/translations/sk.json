@@ -59,7 +59,11 @@
     "stations": "Stanice",
     "lines": "Linky",
     "routes": "Trasy",
-    "journey": "Navigácia"
+    "journey": "Navigácia",
+    "presentation": "Mapa"
+  },
+  "export": {
+    "symbolScale": "Veľkosť symbolov"
   },
   "routes": {
     "filterByStation": "Filter - stanica",

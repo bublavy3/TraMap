@@ -370,6 +370,7 @@ function addStation(coordinates) {
     <!--    The component with the control panel and all its functionality  -->
     <CreatorPanel
         :mode="mode"
+        :imageUrl="imageUrl"
         :activeTab="activeTab"
         :stations="stations"
         :junctions="junctions"

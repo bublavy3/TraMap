@@ -6,6 +6,7 @@ import { PanelTab } from "../constants/panelTabs.js";
 
 const props = defineProps({
   mode: String,
+  imageUrl: String,
   activeTab: String,
   stations: Object,
   junctions: Object,
@@ -114,6 +115,8 @@ const currentText = computed(() => {    // this text will inform the user how to
       :junctions="junctions"
       :lines="lines"
       :routes="routes"
+      :mode="mode"
+      :imageUrl="imageUrl"
       :editingAllowed="true"
       @tabChanged="changeActiveTab"
       @lineFocused="handleLineFocused"

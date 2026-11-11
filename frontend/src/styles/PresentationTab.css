@@ -1,0 +1,15 @@
+.export-button {
+    width: 46%;
+    margin: 2%;
+}
+
+.symbol-scale-control {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.symbol-scale-control input {
+    width: 100%;
+}

@@ -1,5 +1,26 @@
+import puppeteer from "@cloudflare/puppeteer"
+
 function reportResult(data, status = 200) {
   return Response.json(data, { status })
+}
+
+function wait(milliseconds) { // asynchronous waiting - function doesn't need to be async since Promise is asynchronous
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
+
+async function launchHeadlessBrowser(binding) {
+  for (let i = 0; ; i++) {
+    try {
+      return await puppeteer.launch(binding)
+    } catch (error) {
+      const rateLimited = error?.status === 429 || error?.message?.includes("429") && error?.message?.toLowerCase().includes("rate limit")   // the error.status does not seem to be set so it's also checked in error message
+      if (!rateLimited || i > 3) {
+        throw error
+      }
+      console.warn("Rate limit hit as there was another export recently, retrying in 20 seconds")
+      await wait(20000) // Cloudflare's free tier allows only one headless browser instance launch per 20 seconds
+    }
+  }
 }
 
 // This is standard "workers" backend compatible with Cloudflare D1 database hosting
@@ -7,6 +28,9 @@ export default {
   async fetch(request, env) {
     try {
       const url = new URL(request.url)
+      if (url.pathname === "/api/export" && request.method === "POST") {
+        return exportMap(request, env, url)
+      }
       if (url.pathname === "/api/projects" && request.method === "GET") {
         return searchProjects(url.searchParams.get("search") || "", env)
       }
@@ -34,6 +58,75 @@ export default {
       return reportResult({ error: "Error in processing the request" }, 500)
     }
   },
+}
+
+async function exportMap(request, env, requestUrl) {
+  const { format, project } = await request.json()
+  if (!project || !project.stations) {
+    return reportResult({ error: "Export request lacks data" }, 400)
+  }
+
+  let browser
+  try {
+    browser = await launchHeadlessBrowser(env.BROWSER)
+    const page = await browser.newPage()
+    // Puppeteer method to run function in page before setup runs, this function saves project (as projectData)
+    // under browser window's global variable so that it can be accessed by the PrintExport.vue rendering page
+    await page.evaluateOnNewDocument(projectData => {
+      window.export_data = projectData
+    }, project)
+    await page.goto(new URL("/export", requestUrl).toString(), {
+      waitUntil: "networkidle0", // Puppeteer setting to wait until network is idle for at least 500 ms, meaning OSM tiles have finished loading
+      timeout: 60000
+    })
+    await page.waitForFunction(() => window.export_ready === true || window.export_error, { // export_ready signals that Leaflet layers are rendered
+      timeout: 60000
+    })
+    // Node.js worker doesn't see browser's window.export_error variable, and JavaScript evaluates arguments before passing to function,
+    // so function that will provide the variable once it can be evaluated is provided, where evaluate is accessing the browser's variable
+    const renderError = await page.evaluate(() => window.export_error)
+    if (renderError) {
+      throw new Error(renderError)
+    }
+
+    const dimensions = await page.evaluate(() => {  // worker again cannot see inside headless browser page so has to use evaluate and wait for Puppeteer
+      const map = document.querySelector(".print-map")  // the all-encompassing main div
+      return {
+        width: Math.ceil(map.getBoundingClientRect().width),
+        height: Math.ceil(map.getBoundingClientRect().height)
+      }
+    })
+    await page.setViewport({ // viewport just as large is set to display the whole area that should be exported with respect to export zoom level
+      width: dimensions.width,
+      height: dimensions.height,
+      deviceScaleFactor: 1
+    })
+    const output = format === "pdf"
+      ? await page.pdf({
+          printBackground: true,
+          preferCSSPageSize: true,
+          width: `${dimensions.width}px`,
+          height: `${dimensions.height}px`,
+          margin: { top: 0, right: 0, bottom: 0, left: 0 }
+        })
+      : await page.screenshot({
+          type: "png",
+          fullPage: true
+      })
+
+    return new Response(output, {
+      headers: {
+        "Content-Type": format === "pdf" ? "application/pdf" : "image/png",
+        "Content-Disposition": `attachment; filename="tramap-export.${format}"`,  // treat response as downloadable file and suggest filename
+        "Cache-Control": "no-store" // caching snapshot can result in new export reusing old snapshot
+      }
+    })
+  } catch (error) {
+    console.error("Map export failed", error) // I guess debugging this will come handy yet
+    return reportResult({ error: "Could not render the map export" }, 500)
+  } finally {
+    await browser?.close()
+  }
 }
 
 function validateObject(value) {

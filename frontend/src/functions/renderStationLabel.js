@@ -21,7 +21,7 @@ function wrapStationName(name) {
     return textLines
 }
 
-export function renderStationLabel(station) {
+export function renderStationLabel(station, scale = 1) {
     const htmlNameText = wrapStationName(station.name).join("<br>")
 
     return L.marker([station.lat, station.lng], {
@@ -29,7 +29,7 @@ export function renderStationLabel(station) {
             className: "station-label",
             html: htmlNameText,
             iconSize: [0, 0],       // set like this to not place small station names far off the dot
-            iconAnchor: [-10, 10]   // relative position of the label
+            iconAnchor: [-10 * scale, 10 * scale]   // relative position of the label
         })
     })
 }

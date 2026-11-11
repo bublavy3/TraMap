@@ -61,7 +61,11 @@
     "stations": "Stations",
     "lines": "Lines",
     "routes": "Routes",
-    "journey": "Journey"
+    "journey": "Journey",
+    "presentation": "Map"
+  },
+  "export": {
+    "symbolScale": "Symbol size"
   },
   "routes": {
     "filterByStation": "Filter by station",

@@ -1,8 +1,11 @@
 <script setup>
 import { continents } from "./data/continents.js";
-import {onMounted, ref} from "vue";
-import {useI18n} from "vue-i18n";
+import { onMounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
+import { useRoute } from "vue-router"
 import MenuBar from "./components/MenuBar.vue";
+
+const route = useRoute()
 
 const { locale } = useI18n()
 
@@ -49,7 +52,7 @@ onMounted(loadProjects)
 </script>
 
 <template>
-  <MenuBar :countries="getAvailableCountries()" />
+  <MenuBar v-if="route.path !== '/export'" :countries="getAvailableCountries()" />
   <div>
     <router-view />
   </div>

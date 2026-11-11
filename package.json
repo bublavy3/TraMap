@@ -9,6 +9,7 @@
     "db:migrate:remote": "npm --prefix frontend run db:migrate:remote"
   },
   "dependencies": {
+    "@cloudflare/puppeteer": "^1.4.0",
     "leaflet-polylineoffset": "^1.1.1"
   }
 }

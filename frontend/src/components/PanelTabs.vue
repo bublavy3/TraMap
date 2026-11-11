@@ -6,6 +6,7 @@ import LinesTab from "./LinesTab.vue";
 import RoutesTab from "./RoutesTab.vue";
 import { useI18n } from "vue-i18n"
 import JourneyTab from "./JourneyTab.vue";
+import PresentationTab from "./PresentationTab.vue";
 
 const { t } = useI18n()
 
@@ -14,6 +15,8 @@ const props = defineProps({
   junctions: Object,
   lines: Object,
   routes: Object,
+  mode: String,
+  imageUrl: String,
   editingAllowed: Boolean
 })
 
@@ -26,7 +29,7 @@ const emit = defineEmits([
   "routeDeleted"
 ])
 
-const tabs = props.editingAllowed ? [PanelTab.STATIONS, PanelTab.LINES, PanelTab.ROUTES]
+const tabs = props.editingAllowed ? [PanelTab.STATIONS, PanelTab.LINES, PanelTab.ROUTES, PanelTab.PRESENTATION]
                                   : [PanelTab.JOURNEY, PanelTab.STATIONS, PanelTab.LINES] // these will be soon replaced with icons for each respective tab: stations, lines, timetables, fares, export... and somewhere tranfers and other functionality
 const activeTab = ref(props.editingAllowed ? PanelTab.STATIONS : PanelTab.JOURNEY)
 
@@ -69,6 +72,7 @@ function handleRouteDeleted(lineId) {
       <div v-if="activeTab === PanelTab.STATIONS" class="tab-content-inside"><StationsTab :stations="stations" :lines="lines" :routes="routes" :junctions="junctions" :editingAllowed="editingAllowed" @stationDeleted="handleStationDeleted"/></div>
       <div v-if="activeTab === PanelTab.LINES" class="tab-content-inside"><LinesTab :lines="lines" :routes="routes" :stations="stations" :junctions="junctions" :editingAllowed="editingAllowed" @lineFocused="handleLineFocused" @lineDeleted="handleLineDeleted"/></div>
       <div v-if="activeTab === PanelTab.ROUTES" class="tab-content-inside"><RoutesTab :routes="routes" :stations="{ ...stations, ...junctions }" :lines="lines" @routeDeleted="handleRouteDeleted" @hover="handleRouteHovered" /></div>
+      <div v-if="activeTab === PanelTab.PRESENTATION" class="tab-content-inside"><PresentationTab :mode="mode" :imageUrl="imageUrl" :stations="stations" :junctions="junctions" :routes="routes" :lines="lines"/></div>
     </div>
   </div>
 </template>

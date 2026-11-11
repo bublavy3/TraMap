@@ -1,7 +1,7 @@
 import {renderMultiline} from "./renderMultiline.js";
 import { settings } from "../config/settings.js"
 
-export function renderLines(layerGroup, lines, routes, stations, junctions, onRouteRightClick = null) {
+export function renderLines(layerGroup, lines, routes, stations, junctions, onRouteRightClick = null, scale = 1) {
     layerGroup.clearLayers()
 
     const stationMap = { ...stations, ...junctions }
@@ -26,6 +26,6 @@ export function renderLines(layerGroup, lines, routes, stations, junctions, onRo
         })
         points.push([end.lat, end.lng])
 
-        renderMultiline(layerGroup, route.id, points, linesOnRoute, settings.line.width, onRouteRightClick)
+        renderMultiline(layerGroup, route.id, points, linesOnRoute, settings.line.width * scale, onRouteRightClick)
     })
 }
