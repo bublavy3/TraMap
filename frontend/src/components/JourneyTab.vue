@@ -14,7 +14,7 @@ const endQuery = ref("")
 const startStation = ref(null)
 const endStation = ref(null)
 const activeSearch = ref(null)
-const tripList = []
+const tripList = ref([])
 
 const stationList = computed(() => Object.values(props.stations ?? {})) // computed with fallback empty option is needed because on opening of JourneyTab the stations were not yet loaded and the list remained empty
 
@@ -43,7 +43,6 @@ function selectStation(field, station) {
     endQuery.value = station.name
   }
   activeSearch.value = null
-  findJourney()
 }
 
 function findJourney() {
@@ -53,11 +52,11 @@ function findJourney() {
   const now = new Date()
   const currentMinutes = now.getHours() * 60 + now.getMinutes()
   const tripsPath = findQuickestJourney(startStation.value.id, endStation.value.id, currentMinutes, props.lines, props.routes, props.stations)
-  tripList.length = 0 // empty the previous trip sequence first
+  tripList.value = [] // empty the previous trip sequence first
   for (const trip of tripsPath) {
     const tripData = trip.trip.split("|")
     const line = props.lines[tripData[0]]
-    tripList.push({
+    tripList.value.push({
       startStationName: props.stations[trip.from].name,
       endStationName: props.stations[trip.to].name,
       lineName: line.name,
@@ -70,6 +69,7 @@ function findJourney() {
 }
 
 function updateQuery(field, value) {
+  tripList.value = []
   if (field === "start") {
     startQuery.value = value
     startStation.value = null
@@ -124,8 +124,9 @@ function setActiveSearch(field) {
         </li>
       </ul>
     </div>
+    <button type="button" class="search-button" :disabled="!startStation || !endStation" @click="findJourney">⌕</button>
   </div>
-  <div v-for="trip in tripList">
+  <div v-for="trip in tripList" :key="`${trip.startTime}-${trip.lineName}-${trip.startStationName}`">
     <TripVisualization
         :startStationName="trip.startStationName"
         :endStationName="trip.endStationName"

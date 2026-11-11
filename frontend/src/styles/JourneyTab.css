@@ -46,3 +46,8 @@
 .suggestions button:hover {
     background: #eeeeee;
 }
+
+.search-button {
+    width: 100%;
+    margin-top: 5px;
+}

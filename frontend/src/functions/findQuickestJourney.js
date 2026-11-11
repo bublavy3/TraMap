@@ -31,8 +31,6 @@ export function findQuickestJourney(startStationId, endStationId, startTime, lin
     const readyAt = new Int32Array(allConnectionsData.stationsCondensed.size).fill(1000000)   // earliest time we can board a connection at this station
     readyAt[startStationIndex] = startTime
     const tripEnter = new Int32Array(allConnectionsData.tripsCondensed.size).fill(-1) // index of the first boardable connection of the trip
-    // const entryPointer = new Int32Array(allConnectionsData.stationsCondensed.size).fill(-1)     // boardings of connections for path reconstruction
-    // const exitPointer = new Int32Array(allConnectionsData.stationsCondensed.size).fill(-1)      // exits of connections for path reconstruction
 
     let bestArrival = 1000000000
     let targetEnter = null
@@ -66,8 +64,6 @@ export function findQuickestJourney(startStationId, endStationId, startTime, lin
             const newReady = arrivalTime + TRANSFER_TIME
             if (newReady < readyAt[arrivalStation]) {
                 readyAt[arrivalStation] = newReady
-                // entryPointer[arrivalStation] = tripEnter[trip]
-                // exitPointer[arrivalStation] = i
             }
         }
     }
@@ -75,31 +71,6 @@ export function findQuickestJourney(startStationId, endStationId, startTime, lin
     if (targetEnter === null) { // no journey found
         return null
     }
-
-    // // journey reconstruction
-    // const journeyTrips = []
-    // let enterIndex = targetEnter
-    // let exitIndex = targetExit
-    // while (true) {
-    //     const enter = allConnections[enterIndex]
-    //     const exit = allConnections[exitIndex]
-    //     journeyTrips.push({
-    //         trip: allConnectionsData.tripsArray[enter[TRIP_ID]],
-    //         from: allConnectionsData.stationsArray[enter[DEP_STATION]],
-    //         to: allConnectionsData.stationsArray[exit[ARR_STATION]],
-    //         departureTime: enter[DEP_TIME],
-    //         arrivalTime: exit[ARR_TIME],
-    //     })
-    //     const boardedAt = enter[DEP_STATION]
-    //     if (boardedAt === startStationIndex) {
-    //         break
-    //     }
-    //     enterIndex = entryPointer[boardedAt]
-    //     exitIndex = exitPointer[boardedAt]
-    // }
-    // journeyTrips.reverse()
-    //
-    // return journeyTrips
 
     const destinationArrivalTime = allConnections[targetExit][ARR_TIME]
 
@@ -115,38 +86,45 @@ export function findQuickestJourney(startStationId, endStationId, startTime, lin
     }
 
     const latest = new Int32Array(allConnectionsData.stationsCondensed.size).fill(-1) // latest time we can arrive at station to still be able to reach destination asap
-    const tripExit = new Int32Array(allConnectionsData.tripsCondensed.size).fill(-1) // index of last boardable connection via which we can still make it to destination in asap
+    const boardings = new Int32Array(allConnectionsData.stationsCondensed.size).fill(1000000)   // lowest number of boardings from station to destination among journeys that arrive at earliest possible time
+    const tripExit = new Int32Array(allConnectionsData.tripsCondensed.size).fill(-1) // earliest feasible exit connection found so far while scanning each trip backward
+    const tripBoardings = new Int32Array(allConnectionsData.tripsCondensed.size).fill(1000000)  // lowest number of boardings needed if trip is utilized
     const entryPointer = new Int32Array(allConnectionsData.stationsCondensed.size).fill(-1)     // boardings of connections for path reconstruction
     const exitPointer = new Int32Array(allConnectionsData.stationsCondensed.size).fill(-1)      // exits of connections for path reconstruction
 
-    let bestDeparture = startTime - 1 // we will save any connection that can depart later and still get to destination asap
+    let bestDeparture = startTime - 1 // latest departure among journeys with the fewest boardings
+    let bestBoardings = 1000000
     let bestEnter = -1
     let bestExit = -1
 
     for (let i = lowLimit; i < allConnectionsDescending.length; i++) {    // connections are now in descending order, so every connection beyond lowLimit index arrives sooner at its arrival station
         const connection = allConnectionsDescending[i]
-        if (connection[ARR_TIME] <= bestDeparture) {  // no connection will be better anymore
-            break
-        }
-
+        if (bestBoardings === 1 && connection[ARR_TIME] <= bestDeparture) break
         const trip = connection[TRIP_ID]
 
-        if (tripExit[trip] === -1 && (connection[ARR_STATION] === endStationIndex || connection[ARR_TIME] <= latest[connection[ARR_STATION]])) {
-            tripExit[trip] = i; // first good one found - latest good exit of the trip
+        if (connection[ARR_STATION] === endStationIndex || connection[ARR_TIME] <= latest[connection[ARR_STATION]]) {
+            const candidateBoardings = 1 + (connection[ARR_STATION] === endStationIndex ? 0 : boardings[connection[ARR_STATION]])
+            if (tripExit[trip] === -1 || candidateBoardings <= tripBoardings[trip]) { // the scan moves backward, so replacing in case of same amount of connections needed keeps the earlier feasible exit
+                tripExit[trip] = i
+                tripBoardings[trip] = candidateBoardings
+            }
         }
         if (tripExit[trip] === -1) { // target not reachable from here
             continue
         }
 
         if (connection[DEP_STATION] === startStationIndex) {
-            if (connection[DEP_TIME] > bestDeparture) {
+            if (tripBoardings[trip] < bestBoardings || (tripBoardings[trip] === bestBoardings && connection[DEP_TIME] > bestDeparture)) {
+                bestBoardings = tripBoardings[trip]
                 bestDeparture = connection[DEP_TIME]
                 bestEnter = i
                 bestExit = tripExit[trip]
             }
         } else {
             const newLatest = connection[DEP_TIME] - TRANSFER_TIME
-            if (newLatest > latest[connection[DEP_STATION]]) {
+            if (tripBoardings[trip] < boardings[connection[DEP_STATION]] || (tripBoardings[trip] === boardings[connection[DEP_STATION]] && newLatest > latest[connection[DEP_STATION]])) {
+                // we either arrived with fewer boardings required or arrive with same amount of boardings required but can depart later
+                boardings[connection[DEP_STATION]] = tripBoardings[trip]
                 latest[connection[DEP_STATION]] = newLatest
                 entryPointer[connection[DEP_STATION]] = i
                 exitPointer[connection[DEP_STATION]] = tripExit[trip]
