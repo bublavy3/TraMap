@@ -3,8 +3,8 @@ import { watch } from "vue"
 import BaseMap from "./BaseMap.vue"
 import L from "leaflet"
 import { renderStations } from "../functions/renderStations.js"
-import { renderRoutes } from "../functions/renderRoutes.js"
 import { renderLines } from "../functions/renderLines.js"
+import { fitNetwork } from "../functions/fitNetwork.js"
 
 const props = defineProps({
   mode: String,
@@ -18,7 +18,6 @@ const props = defineProps({
 let map = null
 let stationLayerGroup = null
 let lineLayerGroup = null
-let routeLayerGroup = null
 
 function handleMapReady(readyMap) {
   map = readyMap
@@ -29,14 +28,11 @@ function handleMapReady(readyMap) {
 
   stationLayerGroup = L.layerGroup().addTo(map)
   lineLayerGroup = L.layerGroup().addTo(map)
-  routeLayerGroup = L.layerGroup().addTo(map)
   renderStationsLayer()
-  renderRoutesLayer()
   renderLinesLayer()
-}
-
-function renderRoutesLayer() {
-  renderRoutes(routeLayerGroup, props.routes, null, props.stations, props.junctions)
+  if (props.mode === "osm") {
+    fitNetwork(map, props.stations)
+  }
 }
 
 function renderStationsLayer() {
@@ -49,17 +45,14 @@ function renderLinesLayer() {
 
 watch(() => props.stations, () => {
   renderStationsLayer()
-  renderRoutesLayer()
   renderLinesLayer()
 }, { deep: true })
 
 watch(() => props.junctions, () => {
-  renderRoutesLayer()
   renderLinesLayer()
 }, { deep: true })
 
 watch(() => props.routes, () => {
-  renderRoutesLayer()
   renderLinesLayer()
 }, { deep: true })
 

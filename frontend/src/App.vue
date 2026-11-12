@@ -52,7 +52,7 @@ onMounted(loadProjects)
 </script>
 
 <template>
-  <MenuBar v-if="route.path !== '/export'" :countries="getAvailableCountries()" />
+  <MenuBar v-if="route.path !== '/export'" :countries="getAvailableCountries()" :projects="projects" />
   <div>
     <router-view />
   </div>

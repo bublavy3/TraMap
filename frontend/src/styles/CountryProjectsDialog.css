@@ -1,0 +1,52 @@
+.popup-back {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 30px;
+}
+
+.country-projects-popup {
+  position: relative;
+  box-sizing: border-box;
+  width: min(100%, 800px);
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
+  padding: 25px;
+  border: 1px solid #aaaaaa;
+  background: #ffffff;
+}
+
+.country-projects-popup h2 {
+  margin: 0 45px 20px 0;
+}
+
+.country-projects-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border: 0;
+  background: #ffffff;
+  font-size: 30px;
+}
+
+.country-projects-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); /* create as many columns as fit, each having same share of the space */
+  max-height: min(60vh, 500px);
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.country-projects-list a {
+  display: block; /* use the full available width */
+  padding: 10px;
+  text-decoration: none;
+}
+
+.country-projects-list a:hover {
+  background: #eeeeee;
+}

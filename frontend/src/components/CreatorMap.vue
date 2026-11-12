@@ -6,6 +6,7 @@ import { renderStations } from "../functions/renderStations.js"
 import { renderRoutes } from "../functions/renderRoutes.js"
 import { renderLines } from "../functions/renderLines.js"
 import { renderJunctions } from "../functions/renderJunctions.js"
+import { fitNetwork } from "../functions/fitNetwork.js"
 
 const props = defineProps({
   mode: String,
@@ -53,6 +54,9 @@ function handleMapReady(readyMap) {
   renderJunctionsLayer()
   renderRoutesLayer()
   renderLinesLayer()
+  if (props.mode === "osm") {
+    fitNetwork(map, props.stations)
+  }
 }
 
 function renderStationsLayer() {
@@ -97,6 +101,12 @@ function renderLinesLayer() {
 watch(() => props.stations, () => {
   renderStationsLayer()
 }, { deep: true })
+
+watch(() => props.stations, () => { // project loading replaces the stations object while editing mutates it in place and without deep:true this is not triggered
+  if (props.mode === "osm") {
+    fitNetwork(map, props.stations)
+  }
+})
 
 watch(() => props.junctions, () => {
   renderJunctionsLayer()

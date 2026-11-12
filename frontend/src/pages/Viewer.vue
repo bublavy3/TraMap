@@ -1,10 +1,8 @@
 <script setup>
-import { onMounted, ref } from "vue"
+import { ref, watch } from "vue"
 import { useRoute } from "vue-router"
 import ViewerMap from "../components/ViewerMap.vue"
-import CreatorPanel from "../components/CreatorPanel.vue";
 import ViewerPanel from "../components/ViewerPanel.vue";
-import {PanelTab} from "../constants/panelTabs.js";
 
 const route = useRoute()
 const mode = ref("osm")
@@ -39,7 +37,9 @@ async function loadProject() {
   }
 }
 
-onMounted(loadProject)
+watch(() => route.params.id, loadProject, { // onMounted did not load another project after opening while one was already open
+  immediate: true // needed for initial project loading when Viewer is first opened
+})
 </script>
 
 <template>
