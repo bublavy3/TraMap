@@ -75,7 +75,7 @@ Feel free to inspect the code and roam around the live website instead.
 - There is no user management implemented yet, so everyone can edit and see anything. This will of course not be the case in future.
 - CSS styles and display in other viewport sizes were not refined yet. This is also planned for the future.
 - Many edge cases are not treated yet. Testing and refining phase is planned for the future.
-- Almost all available projects are debugging ones, some of them have corrupted data that no longer matches expectations of algorithms added later.
+- Almost all available projects are debugging ones, some of them have corrupted data that no longer matches expectations of algorithms added later. The best already existing project to explore as a demostration is **Trencin-TEST-09**
 
 ## Calendar of implementation
 | Start date  | Issue                                                                        | State       |
